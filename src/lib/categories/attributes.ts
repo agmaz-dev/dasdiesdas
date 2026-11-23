@@ -314,6 +314,208 @@ export const ATTRIBUTE_SETS = {
 
   // Teile & Zubehör
   teile: [
-    { key: "zustand", label: "Zustand", type: "select", options: ["Neu", "Gebraucht", "Generálüberholt".replace("á", "a"), "Defekt / für Bastler"], filter: true, required: true },
+    { key: "zustand", label: "Zustand", type: "select", options: ["Neu", "Gebraucht", "Generalüberholt", "Defekt / für Bastler"], filter: true, required: true },
+    { key: "hersteller", label: "Hersteller / Marke", type: "text", filter: true },
+    { key: "passend_fuer", label: "Passend für", type: "text", placeholder: "z. B. VW Golf 7, BJ 2015" },
+    { key: "teilenummer", label: "Teilenummer (OE)", type: "text" },
+    { key: "versand", label: "Übergabe", type: "select", options: SHIPPING, filter: true },
   ],
-} as const;
+  reifen: [
+    { key: "saison", label: "Saison", type: "select", options: ["Sommer", "Winter", "Ganzjahr"], filter: true, required: true },
+    { key: "breite", label: "Breite", type: "number", unit: "mm", min: 100, max: 400, filter: true },
+    { key: "querschnitt", label: "Querschnitt", type: "number", unit: "%", min: 20, max: 100, filter: true },
+    { key: "zoll", label: "Zoll", type: "number", min: 10, max: 26, filter: true },
+    { key: "profil", label: "Profiltiefe", type: "number", unit: "mm", min: 0, max: 20, decimal: true },
+    { key: "anzahl", label: "Anzahl", type: "number", min: 1, max: 20 },
+    { key: "mit_felge", label: "Mit Felgen", type: "boolean", filter: true },
+    { key: "zustand", label: "Zustand", type: "select", options: ["Neu", "Gebraucht"], filter: true },
+    { key: "versand", label: "Übergabe", type: "select", options: SHIPPING },
+  ],
+
+  // Waren
+  waren: goodsBase,
+  marke_waren: [
+    { key: "marke", label: "Marke / Hersteller", type: "text", filter: true },
+    { key: "modell", label: "Modell", type: "text" },
+    ...goodsBase,
+  ],
+  handy: [
+    ...brandModel("phones", "Hersteller"),
+    { key: "speicher", label: "Speicher", type: "select", options: ["bis 32 GB", "64 GB", "128 GB", "256 GB", "512 GB", "1 TB", "2 TB"], filter: true },
+    { key: "farbe", label: "Farbe", type: "text" },
+    { key: "garantie", label: "Garantie vorhanden", type: "boolean" },
+    ...goodsBase,
+  ],
+  tablet: [
+    ...brandModel("tablets", "Hersteller"),
+    { key: "speicher", label: "Speicher", type: "select", options: ["bis 32 GB", "64 GB", "128 GB", "256 GB", "512 GB", "1 TB", "2 TB"], filter: true },
+    { key: "mobilfunk", label: "Mobilfunk (LTE/5G)", type: "boolean", filter: true },
+    ...goodsBase,
+  ],
+  computer: [
+    { key: "marke", label: "Marke", type: "text", filter: true },
+    { key: "modell", label: "Modell", type: "text" },
+    { key: "prozessor", label: "Prozessor", type: "text" },
+    { key: "ram", label: "Arbeitsspeicher", type: "number", unit: "GB", min: 0, max: 4096, filter: true },
+    { key: "speicher", label: "Speicher", type: "number", unit: "GB", min: 0, max: 1_000_000 },
+    ...goodsBase,
+  ],
+  kleidung: [
+    { key: "groesse", label: "Größe", type: "text", filter: true, placeholder: "z. B. M, 38, 104" },
+    { key: "marke", label: "Marke", type: "text", filter: true },
+    { key: "farbe", label: "Farbe", type: "select", options: COLORS },
+    ...goodsBase,
+  ],
+  schuhe: [
+    { key: "groesse", label: "Schuhgröße (EU)", type: "number", min: 15, max: 55, decimal: true, filter: true },
+    { key: "marke", label: "Marke", type: "text", filter: true },
+    ...goodsBase,
+  ],
+  medien: [
+    { key: "format", label: "Format", type: "select", options: ["Buch", "E-Book", "Hörbuch", "CD", "Vinyl", "DVD", "Blu-ray", "Zeitschrift", "Comic", "Andere"], filter: true },
+    { key: "autor", label: "Autor / Künstler", type: "text", filter: true },
+    { key: "sprache", label: "Sprache", type: "select", options: ["Deutsch", "Englisch", "Türkisch", "Arabisch", "Französisch", "Spanisch", "Russisch", "Polnisch", "Andere"] },
+    ...goodsBase,
+  ],
+  lebensmittel: [
+    { key: "mhd", label: "Mindesthaltbarkeit", type: "text", placeholder: "z. B. 12/2027" },
+    { key: "bio", label: "Bio", type: "boolean", filter: true },
+    { key: "versand", label: "Übergabe", type: "select", options: SHIPPING },
+  ],
+  verschenken: [
+    { key: "zustand", label: "Zustand", type: "select", options: CONDITION_GOODS, filter: true },
+    { key: "abholung", label: "Abholung bis", type: "text" },
+  ],
+  tickets: [
+    { key: "datum", label: "Datum der Veranstaltung", type: "text", required: true, placeholder: "TT.MM.JJJJ" },
+    { key: "veranstaltungsort", label: "Veranstaltungsort", type: "text", filter: true },
+    { key: "anzahl", label: "Anzahl Tickets", type: "number", min: 1, max: 100 },
+    { key: "versand", label: "Übergabe", type: "select", options: ["Persönlich", "Digital / E-Ticket", "Postversand"] },
+  ],
+
+  // Maschinen
+  maschine: machineBase,
+  traktor: [
+    ...machineBase,
+    { key: "antrieb", label: "Antrieb", type: "select", options: ["Allrad", "Hinterrad", "Raupe"], filter: true },
+    { key: "ps", label: "Leistung (PS)", type: "number", unit: "PS", min: 0, max: 1500, filter: true },
+    { key: "zulassung", label: "Straßenzulassung", type: "boolean" },
+  ],
+
+  // Dienstleistungen
+  service: [
+    { key: "preisart", label: "Preisangabe", type: "select", options: ["Festpreis", "Stundensatz", "Pauschal nach Absprache", "Kostenloses Angebot"], filter: true },
+    { key: "einsatzgebiet", label: "Einsatzgebiet", type: "text", placeholder: "z. B. ganz Berlin + 30 km", filter: true },
+    { key: "erfahrung", label: "Berufserfahrung", type: "number", unit: "Jahre", min: 0, max: 70 },
+    { key: "meisterbetrieb", label: "Meisterbetrieb / Fachbetrieb", type: "boolean", filter: true },
+    { key: "versichert", label: "Betriebshaftpflicht vorhanden", type: "boolean", filter: true },
+    { key: "notdienst", label: "24h-Notdienst", type: "boolean", filter: true },
+    { key: "sprachen", label: "Sprachen", type: "multiselect", options: ["Deutsch", "Englisch", "Türkisch", "Arabisch", "Polnisch", "Russisch", "Ukrainisch", "Rumänisch", "Französisch", "Spanisch", "Italienisch", "Kurdisch", "Persisch", "Vietnamesisch"], filter: true },
+  ],
+  umzug: [
+    { key: "preisart", label: "Preisangabe", type: "select", options: ["Festpreis", "Stundensatz", "Pauschal nach Absprache", "Kostenloses Angebot"], filter: true },
+    { key: "fahrzeug", label: "Fahrzeuge", type: "multiselect", options: ["Transporter bis 3,5 t", "LKW 7,5 t", "LKW 12 t+", "Möbellift"], filter: true },
+    { key: "helfer", label: "Anzahl Helfer", type: "number", min: 0, max: 100 },
+    { key: "einsatzgebiet", label: "Einsatzgebiet", type: "select", options: ["Nur Berlin", "Berlin & Brandenburg", "Deutschlandweit", "Europaweit"], filter: true },
+    { key: "versichert", label: "Transportversicherung", type: "boolean", filter: true },
+  ],
+  unterricht: [
+    { key: "niveau", label: "Niveau", type: "multiselect", options: ["Kinder / Vorschule", "Grundschule", "Klasse 7–10 (MSA)", "Oberstufe / Abitur", "Ausbildung / Berufsschule", "Studium", "Erwachsene / Beruf", "Anfänger", "Fortgeschrittene", "Profis"], filter: true },
+    { key: "unterrichtsort", label: "Unterrichtsort", type: "multiselect", options: ["Beim Lehrer / Studio", "Beim Schüler zu Hause", "Online", "Gruppenkurs"], filter: true, required: true },
+    { key: "fach", label: "Fach / Thema", type: "text", filter: true, placeholder: "z. B. Mathematik, Gitarre, Deutsch B2" },
+    { key: "erfahrung", label: "Unterrichtserfahrung", type: "number", unit: "Jahre", min: 0, max: 70 },
+    { key: "qualifikation", label: "Qualifikation", type: "select", options: ["Lehramt / Lehrkraft", "Studierende/r", "Muttersprachler/in", "Zertifizierte/r Trainer/in", "Meister/in", "Berufserfahrung", "Andere"], filter: true },
+    { key: "probestunde", label: "Kostenlose Probestunde", type: "boolean", filter: true },
+    { key: "sprachen", label: "Unterrichtssprachen", type: "multiselect", options: ["Deutsch", "Englisch", "Türkisch", "Arabisch", "Polnisch", "Russisch", "Ukrainisch", "Französisch", "Spanisch", "Italienisch"] },
+  ],
+  fahrschule: [
+    { key: "klassen", label: "Führerscheinklassen", type: "multiselect", options: ["AM", "A1", "A2", "A", "B", "B96", "BE", "B197", "C1", "C", "CE", "D", "T/L", "Bootsführerschein", "Flugschein (PPL)"], filter: true, required: true },
+    { key: "sprachen", label: "Sprachen", type: "multiselect", options: ["Deutsch", "Englisch", "Türkisch", "Arabisch", "Polnisch", "Russisch", "Ukrainisch", "Persisch"], filter: true },
+    { key: "intensivkurs", label: "Intensivkurs / Ferienkurs", type: "boolean", filter: true },
+    { key: "automatik", label: "Automatik-Ausbildung", type: "boolean", filter: true },
+  ],
+
+  // Jobs
+  job: [
+    { key: "anstellung", label: "Anstellungsart", type: "select", options: ["Vollzeit", "Teilzeit", "Minijob", "Midijob", "Werkstudent", "Ausbildung", "Duales Studium", "Praktikum", "Freiberuflich / Projekt", "Aushilfe / Saison", "Ehrenamt"], filter: true, required: true },
+    { key: "arbeitgeber", label: "Arbeitgeber", type: "text", filter: true },
+    { key: "erfahrung", label: "Berufserfahrung", type: "select", options: ["Keine erforderlich", "Berufseinsteiger", "1–3 Jahre", "3–5 Jahre", "Mehr als 5 Jahre", "Führungserfahrung"], filter: true },
+    { key: "homeoffice", label: "Homeoffice", type: "select", options: ["Nein", "Teilweise", "Vollständig remote"], filter: true },
+    { key: "gehalt_von", label: "Gehalt von (brutto/Jahr)", type: "number", unit: "€", min: 0, max: 10_000_000, filter: true },
+    { key: "gehalt_bis", label: "Gehalt bis (brutto/Jahr)", type: "number", unit: "€", min: 0, max: 10_000_000 },
+    { key: "stundenlohn", label: "Stundenlohn", type: "number", unit: "€", min: 0, max: 10_000, decimal: true, help: "Gesetzlicher Mindestlohn beachten" },
+    { key: "befristet", label: "Befristet", type: "boolean" },
+    { key: "deutschkenntnisse", label: "Deutschkenntnisse", type: "select", options: ["Nicht erforderlich", "Grundkenntnisse (A2)", "Gut (B1/B2)", "Sehr gut (C1/C2)", "Muttersprache"], filter: true },
+    { key: "beginn", label: "Beginn", type: "text", placeholder: "z. B. ab sofort" },
+  ],
+  jobsuche: [
+    { key: "anstellung", label: "Gesuchte Anstellungsart", type: "multiselect", options: ["Vollzeit", "Teilzeit", "Minijob", "Werkstudent", "Ausbildung", "Praktikum", "Freiberuflich / Projekt", "Aushilfe"], filter: true, required: true },
+    { key: "erfahrung", label: "Berufserfahrung", type: "number", unit: "Jahre", min: 0, max: 60, filter: true },
+    { key: "qualifikation", label: "Höchster Abschluss", type: "select", options: ["Ohne Abschluss", "Hauptschule / BBR", "MSA / Realschule", "Abitur", "Berufsausbildung", "Meister / Techniker", "Bachelor", "Master / Diplom", "Promotion"] },
+    { key: "fuehrerschein", label: "Führerschein", type: "multiselect", options: ["B", "BE", "C1", "C", "CE", "D", "Gabelstapler"] },
+    { key: "sprachen", label: "Sprachen", type: "multiselect", options: ["Deutsch", "Englisch", "Türkisch", "Arabisch", "Polnisch", "Russisch", "Ukrainisch", "Französisch", "Spanisch"] },
+    { key: "verfuegbar_ab", label: "Verfügbar ab", type: "text" },
+  ],
+  haushaltshilfe: [
+    { key: "anstellung", label: "Anstellungsart", type: "select", options: ["Vollzeit", "Teilzeit", "Minijob", "Stundenweise", "Live-in / Rund um die Uhr", "Einmalig"], filter: true, required: true },
+    { key: "stunden", label: "Stunden pro Woche", type: "number", min: 1, max: 168, filter: true },
+    { key: "erfahrung", label: "Erfahrung", type: "number", unit: "Jahre", min: 0, max: 60, filter: true },
+    { key: "nichtraucher", label: "Nichtraucher/in", type: "boolean", filter: true },
+    { key: "fuehrerschein", label: "Führerschein vorhanden", type: "boolean", filter: true },
+    { key: "fuehrungszeugnis", label: "Erweitertes Führungszeugnis", type: "boolean", filter: true },
+    { key: "erste_hilfe", label: "Erste-Hilfe-Kurs", type: "boolean" },
+    { key: "sprachen", label: "Sprachen", type: "multiselect", options: ["Deutsch", "Englisch", "Türkisch", "Arabisch", "Polnisch", "Russisch", "Ukrainisch", "Rumänisch", "Bulgarisch", "Spanisch"], filter: true },
+  ],
+
+  // Tiere
+  tier: [
+    { key: "rasse", label: "Rasse / Art", type: "text", filter: true, required: true },
+    { key: "alter", label: "Alter", type: "text", placeholder: "z. B. 10 Wochen, 3 Jahre" },
+    { key: "geschlecht", label: "Geschlecht", type: "select", options: ["Männlich", "Weiblich", "Paar / Gruppe", "Unbekannt"], filter: true },
+    { key: "geimpft", label: "Geimpft", type: "boolean", filter: true },
+    { key: "gechippt", label: "Gechippt", type: "boolean", filter: true },
+    { key: "entwurmt", label: "Entwurmt", type: "boolean" },
+    { key: "kastriert", label: "Kastriert", type: "boolean", filter: true },
+    { key: "papiere", label: "Papiere / Stammbaum", type: "boolean", filter: true },
+    { key: "eu_heimtierausweis", label: "EU-Heimtierausweis", type: "boolean" },
+  ],
+  nutztier: [
+    { key: "rasse", label: "Rasse / Art", type: "text", filter: true, required: true },
+    { key: "anzahl", label: "Anzahl Tiere", type: "number", min: 1, max: 100_000, filter: true },
+    { key: "alter", label: "Alter", type: "text" },
+    { key: "geschlecht", label: "Geschlecht", type: "select", options: ["Männlich", "Weiblich", "Gemischt"], filter: true },
+    { key: "nutzung", label: "Nutzung", type: "select", options: ["Zucht", "Milch", "Fleisch", "Eier", "Wolle", "Hobby / Freizeit", "Andere"], filter: true },
+    { key: "papiere", label: "Papiere / Herdbuch", type: "boolean", filter: true },
+  ],
+  pferd: [
+    { key: "rasse", label: "Rasse", type: "text", filter: true, required: true },
+    { key: "alter", label: "Alter", type: "number", unit: "Jahre", min: 0, max: 50, filter: true },
+    { key: "stockmass", label: "Stockmaß", type: "number", unit: "cm", min: 50, max: 220, filter: true },
+    { key: "geschlecht", label: "Geschlecht", type: "select", options: ["Stute", "Wallach", "Hengst", "Fohlen"], filter: true },
+    { key: "ausbildung", label: "Ausbildungsstand", type: "select", options: ["Roh / Jungpferd", "Angeritten", "Freizeitpferd", "Dressur", "Springen", "Vielseitigkeit", "Western", "Fahren", "Zucht"], filter: true },
+    { key: "papiere", label: "Equidenpass / Papiere", type: "boolean", filter: true },
+    { key: "aku", label: "Ankaufsuntersuchung vorhanden", type: "boolean" },
+  ],
+  vermisst: [
+    { key: "tierart", label: "Tierart", type: "select", options: ["Hund", "Katze", "Vogel", "Kleintier", "Pferd", "Andere"], filter: true, required: true },
+    { key: "datum", label: "Seit / am", type: "text", required: true, placeholder: "TT.MM.JJJJ" },
+    { key: "merkmale", label: "Besondere Merkmale", type: "text" },
+    { key: "gechippt", label: "Gechippt", type: "boolean" },
+  ],
+
+  // Veranstaltungen, Nachbarschaft
+  veranstaltung: [
+    { key: "datum", label: "Datum", type: "text", required: true, placeholder: "TT.MM.JJJJ" },
+    { key: "uhrzeit", label: "Uhrzeit", type: "text", placeholder: "z. B. 19:00 Uhr" },
+    { key: "ort", label: "Veranstaltungsort", type: "text", filter: true },
+    { key: "eintritt_frei", label: "Eintritt frei", type: "boolean", filter: true },
+  ],
+  allgemein: [],
+} as const satisfies Record<string, readonly AttributeDef[]>;
+
+export type AttributeSetKey = keyof typeof ATTRIBUTE_SETS;
+
+export function getAttributeSet(key: AttributeSetKey | undefined): readonly AttributeDef[] {
+  if (!key) return [];
+  return ATTRIBUTE_SETS[key] as readonly AttributeDef[];
+}
