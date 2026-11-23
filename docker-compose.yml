@@ -1,0 +1,43 @@
+# Produktionsnahes Setup: PostgreSQL + Migrationen + App
+# Start:  docker compose up -d --build
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: dds
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD fehlt}
+      POSTGRES_DB: dasdiesdas
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dds -d dasdiesdas"]
+      interval: 5s
+      retries: 10
+
+  migrate:
+    build: { context: ., target: builder }
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://dds:${POSTGRES_PASSWORD}@db:5432/dasdiesdas?schema=public
+    command: sh -c "npx prisma migrate deploy && npm run seed"
+    depends_on:
+      db: { condition: service_healthy }
+
+  app:
+    build: { context: ., target: runner }
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://dds:${POSTGRES_PASSWORD}@db:5432/dasdiesdas?schema=public
+      UPLOAD_DIR: /data/uploads
+    ports:
+      - "3000:3000"
+    volumes:
+      - uploads:/data/uploads
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+
+volumes:
+  pgdata:
+  uploads:
