@@ -1,0 +1,238 @@
+// dasdiesdas – Datenbankschema
+// Kategorien sind im Code definiert (src/lib/categories), nicht in der Datenbank.
+// Eine Anzeige speichert die ID ihrer Kategorie sowie alle Vorfahren (categoryPath),
+// damit Suchen in Oberkategorien alle Unterkategorien einschließen.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum AccountType {
+  PRIVATE
+  COMMERCIAL
+}
+
+enum ListingStatus {
+  PENDING // wartet auf Freigabe
+  ACTIVE // online
+  REJECTED // abgelehnt durch Moderation
+  INACTIVE // vom Nutzer deaktiviert
+  BLOCKED // durch Admin gesperrt (z. B. nach Meldung)
+  DELETED // vom Nutzer gelöscht (Soft-Delete)
+}
+
+enum PriceType {
+  FIXED // Festpreis
+  NEGOTIABLE // Verhandlungsbasis
+  FREE // Zu verschenken
+  ON_REQUEST // Preis auf Anfrage
+}
+
+enum OfferType {
+  OFFER // Angebot
+  WANTED // Gesuch
+}
+
+enum TokenType {
+  EMAIL_VERIFY
+  PASSWORD_RESET
+}
+
+enum ReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+model User {
+  id              String      @id @default(cuid())
+  email           String      @unique
+  passwordHash    String
+  name            String
+  phone           String?
+  role            Role        @default(USER)
+  accountType     AccountType @default(PRIVATE)
+  // Pflichtangaben für gewerbliche Anbieter (Impressumspflicht)
+  companyName     String?
+  companyAddress  String?
+  vatId           String?
+  imprint         String?
+  emailVerifiedAt DateTime?
+  blockedAt       DateTime?
+  blockedReason   String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  sessions        Session[]
+  tokens          AuthToken[]
+  listings        Listing[]
+  images          ListingImage[]
+  favorites       Favorite[]
+  savedSearches   SavedSearch[]
+  buyerChats      Conversation[] @relation("buyer")
+  sellerChats     Conversation[] @relation("seller")
+  messages        Message[]
+  reports         Report[]
+}
+
+model Session {
+  id        String   @id // SHA-256-Hash des Cookie-Tokens
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model AuthToken {
+  id        String    @id // SHA-256-Hash des Tokens
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      TokenType
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+
+  @@index([userId, type])
+}
+
+model Listing {
+  id           String        @id @default(cuid())
+  number       Int           @unique @default(autoincrement()) // öffentliche Anzeigennummer
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId   String
+  categoryPath String[] // alle Vorfahren inkl. eigener ID
+  title        String
+  description  String
+  priceCents   Int?
+  priceType    PriceType     @default(FIXED)
+  offerType    OfferType     @default(OFFER)
+  attributes   Json          @default("{}")
+  attrIndex    Json          @default("{}") // Textmerkmale in Kleinschreibung für Filter
+  searchText   String        @default("") // Titel, Beschreibung, Merkmale in Kleinschreibung
+  state        String // Bundesland
+  city         String
+  district     String? // Berlin: Bezirk
+  subdistrict  String? // Berlin: Ortsteil
+  postalCode   String
+  showPhone    Boolean       @default(false)
+  phone        String?
+  status       ListingStatus @default(PENDING)
+  rejectReason String?
+  views        Int           @default(0)
+  featured     Boolean       @default(false) // Premium-/Top-Anzeige (vom Admin vergeben)
+  publishedAt  DateTime?
+  expiresAt    DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  images        ListingImage[]
+  favorites     Favorite[]
+  conversations Conversation[]
+  reports       Report[]
+
+  @@index([status, expiresAt, publishedAt])
+  @@index([featured, publishedAt])
+  @@index([categoryPath], type: Gin)
+  @@index([userId])
+  @@index([state, city])
+  @@index([searchText(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@index([attributes(ops: JsonbPathOps)], type: Gin)
+}
+
+model ListingImage {
+  id        String   @id @default(cuid())
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  listingId String?
+  listing   Listing? @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  file      String // Dateiname der großen Version
+  thumb     String // Dateiname des Vorschaubilds
+  width     Int
+  height    Int
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([listingId, position])
+  @@index([ownerId])
+}
+
+model Favorite {
+  userId    String
+  listingId String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, listingId])
+}
+
+model SavedSearch {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  query     String // URL inkl. Suchparametern, z. B. /anzeigen/immobilien?q=balkon
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Conversation {
+  id        String    @id @default(cuid())
+  listingId String
+  listing   Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  buyerId   String
+  buyer     User      @relation("buyer", fields: [buyerId], references: [id], onDelete: Cascade)
+  sellerId  String
+  seller    User      @relation("seller", fields: [sellerId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  messages  Message[]
+
+  @@unique([listingId, buyerId])
+  @@index([buyerId, updatedAt])
+  @@index([sellerId, updatedAt])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  body           String
+  readAt         DateTime?
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+// Meldungen nach Art. 16 Digital Services Act (Melde- und Abhilfeverfahren)
+model Report {
+  id         String       @id @default(cuid())
+  listingId  String
+  listing    Listing      @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  reporterId String?
+  reporter   User?        @relation(fields: [reporterId], references: [id], onDelete: SetNull)
+  email      String?
+  reason     String
+  details    String
+  status     ReportStatus @default(OPEN)
+  resolution String?
+  createdAt  DateTime     @default(now())
+  resolvedAt DateTime?
+
+  @@index([status, createdAt])
+}
