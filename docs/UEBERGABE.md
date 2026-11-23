@@ -7,7 +7,9 @@ Zuerst lesen, dann `docs/STAND.md`.
 - Token-effizient arbeiten. Keine langen Texte.
 - Klar sagen, was machbar ist und was nicht.
 - Aufgaben sorgfältig, vollständig, ohne Mängel erledigen.
-- Erst nach Bestätigung des Nutzers loslegen. Nicht fragen, wann begonnen werden soll – auf das Kommando warten.
+- Aufgabe erst beginnen, wenn der Nutzer sie ausdrücklich erteilt.
+- Niemals fragen „Soll ich loslegen/anfangen/mit Schritt X weitermachen?“. Keine nächsten Schritte anbieten. Antworten ohne Rückfrage beenden.
+- Nur fragen, wenn eine Angabe fehlt, ohne die die Aufgabe nicht machbar ist.
 - Nutzer kann nichts selbst technisch umsetzen: alles selbst erledigen, Links/Schritte vorher klar nennen.
 
 ## Projekt
