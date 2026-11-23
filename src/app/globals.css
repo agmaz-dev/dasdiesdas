@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+  /* Flächen (dunkles Design) */
+  --color-page: #0b0b0d;
+  --color-surface: #141519;
+  --color-surface-2: #1c1e23;
+  --color-line: #2a2d34;
+  /* Text */
+  --color-ink: #f4f4f5;
+  --color-ink-2: #c8cbd2;
+  --color-ink-3: #959ba6;
+  /* Orange = Markenfarbe */
+  --color-brand-50: #26170c;
+  --color-brand-100: #3a220f;
+  --color-brand-200: #fdba74;
+  --color-brand-500: #fb923c;
+  --color-brand-600: #f97316;
+  --color-brand-700: #f97316;
+  --color-brand-800: #ea580c;
+  --color-brand-900: #7c2d12;
+  --color-accent-500: #f97316;
+  --color-accent-600: #ea580c;
+  --color-accent-700: #fb923c;
+  /* Türkis = Kategorien & Hinweise */
+  --color-teal: #2dd4bf;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-page text-ink-2;
+}
+
+/* Wiederverwendbare Bausteine (Tailwind v4: eigene Utilities) */
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+}
+@utility btn-primary {
+  @apply btn bg-brand-800 text-white hover:bg-brand-600;
+}
+@utility btn-accent {
+  @apply btn bg-brand-800 text-white hover:bg-brand-600;
+}
+@utility btn-outline {
+  @apply btn border border-line bg-surface-2 text-ink hover:border-ink-3;
+}
+@utility btn-danger {
+  @apply btn bg-red-600 text-white hover:bg-red-700;
+}
+@utility input {
+  @apply block w-full rounded-xl border border-line bg-surface-2 px-3 py-2.5 text-sm text-ink placeholder:text-ink-3 focus:border-brand-600 focus:ring-2 focus:ring-brand-600/25 focus:outline-none disabled:opacity-50 aria-[invalid=true]:border-red-500;
+}
+@utility label {
+  @apply mb-1 block text-sm font-medium text-ink-2;
+}
+@utility card {
+  @apply rounded-2xl border border-line bg-surface;
+}
+@utility field-error {
+  @apply mt-1 text-xs text-red-400;
+}
+@utility link {
+  @apply text-brand-500 underline-offset-2 hover:underline;
+}
+
+@layer components {
+  .prose-legal h2 {
+    @apply mt-8 mb-2 text-lg font-semibold text-ink;
+  }
+  .prose-legal h3 {
+    @apply mt-5 mb-1 font-semibold text-ink;
+  }
+  .prose-legal p,
+  .prose-legal li {
+    @apply mb-2 text-sm leading-relaxed text-ink-2;
+  }
+  .prose-legal ul {
+    @apply mb-3 list-disc pl-5;
+  }
+}
