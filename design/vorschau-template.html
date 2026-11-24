@@ -9,7 +9,7 @@
 :root{--bg:#0d0f12;--s1:#16191e;--s2:#1d2127;--bd:#272c34;--tx:#f3f4f6;--mu:#9aa1ac;--or:#f97316;--orb:#ea580c;--te:#2dd4bf;--r:14px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:#050607;color:var(--tx);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
-body{display:flex;justify-content:center}
+body{display:flex;flex-direction:column;align-items:center}#dt{width:100%;position:sticky;top:0;z-index:25}
 #app{width:100%;max-width:480px;min-height:100vh;background:var(--bg);position:relative;padding-bottom:88px}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
@@ -128,10 +128,42 @@ svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 .tip{white-space:nowrap;position:fixed;z-index:29;bottom:96px;left:50%;transform:translateX(-50%);background:var(--orb);color:#fff;padding:10px 14px;border-radius:12px;font-size:14px;font-weight:600;display:flex;gap:10px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.4)}
 .tip:after{content:"";position:absolute;bottom:-6px;left:50%;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:var(--orb)}
 .empty{height:12px}
+
+.dtop{display:none}
+@media(min-width:900px){html,body{overflow-x:hidden}
+#app{max-width:1200px;padding-bottom:40px}#app.n{max-width:720px}
+.nav,.tip{display:none}
+#dt{background:rgba(13,15,18,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--bd)}.dtop{display:flex;align-items:center;gap:18px;height:68px;padding:0 24px;max-width:1200px;margin:0 auto;white-space:nowrap}.row.all{grid-column:1/-1}
+.dtop .logo{flex:none;font-size:24px}
+.dtop nav{display:flex;gap:16px;font-size:14px;color:#d1d5db}.dtop nav a:hover{color:var(--or)}
+.dtop .search{flex:1;margin:0;height:44px;min-width:140px;max-width:360px}.dtop .search span{overflow:hidden;text-overflow:ellipsis}
+.dtop .act{display:flex;gap:10px;align-items:center;margin-left:auto}
+.dtop .ab{display:flex;align-items:center;gap:6px;height:42px;padding:0 14px;border-radius:12px;border:1px solid var(--bd);font-size:14px;font-weight:600}
+.dtop .ab.o{background:var(--orb);border-color:var(--orb);color:#fff}
+.dtop .ab svg{width:18px;height:18px}
+#app.home .top{display:none}
+.top{position:static}.top .bar{height:60px;padding:0 16px}.top .bar h1{text-align:left;font-size:22px}
+.note{border-radius:0}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;padding:0 24px}
+.sec{padding:22px 24px 10px}.hs{padding:0 24px 4px}.tools,.cnt{padding-left:24px;padding-right:24px}
+.card{width:210px}
+.lc{flex-direction:column}.lc img{width:100%;height:auto;aspect-ratio:4/3}.lc .p{padding:12px 40px 14px 14px}
+.lc .hz{background:rgba(0,0,0,.5);color:#fff;border-radius:50%;padding:6px;display:grid}
+.adw{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;padding:24px}
+.adw .gal img{border-radius:16px}.adw .facts,.adw .seller,.adw .hint{margin-left:0;margin-right:0}.adw .pad{padding:0 0 14px}
+.adw .cta{position:static;transform:none;max-width:none;background:none;border:0;padding:12px 0}
+.adw .sp{display:none}
+.cta{max-width:720px}
+.sheet{max-width:560px;bottom:auto;top:50%;border-radius:20px;border:1px solid var(--bd);transform:translate(-50%,-40%);opacity:0;pointer-events:none;transition:.2s}
+.sheet.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
+.hello,.stats{padding-left:24px;padding-right:24px}
+.ph{grid-template-columns:repeat(4,1fr)}.ph div.big{grid-column:span 4;aspect-ratio:3/1}
+}
+@media(min-width:900px) and (max-width:1199px){.dtop nav{display:none}}
 </style>
 </head>
 <body>
-<div id="app"></div>
+<div id="dt"></div><div id="app"></div>
 <div class="ov" id="ov" onclick="closeAll()"></div>
 <aside class="drawer" id="drawer"></aside>
 <div class="sheet" id="sheet"></div>
@@ -182,6 +214,7 @@ const CITY=['Berlin-Mitte','Berlin-Kreuzberg','Berlin-Neukölln','Potsdam','Berl
 const ADJ=['Top Zustand','wie neu','gepflegt','kaum benutzt','mit Garantie','abholbereit','Schnäppchen','VB'];
 function items(key,title,n=12){const r=[];for(let k=0;k<n;k++){const s=h(key+':'+k);r.push({id:key+':'+k,img:`https://picsum.photos/seed/dd${s%100000}/480/360`,t:`${title} – ${ADJ[s%ADJ.length]}`,p:fmt(10*(1+s%400))+' €',c:CITY[s%CITY.length],d:['Heute','Gestern','Vor 2 Tagen','Vor 3 Tagen'][s%4],tp:s%5===0})}return r}
 const tb=(title,left='back',right='')=>`<div class="note">Design-Vorschau – nur Optik, Beispieldaten</div><header class="top"><div class="bar"><button class="ib" onclick="${left==='menu'?'openDrawer()':'history.back()'}">${ic(left)}</button><h1>${title}</h1>${right||'<a class="ib" href="#s">'+ic('search')+'</a>'}</div></header>`;
+const dtop=()=>`<header class="dtop"><a class="logo" href="#">das<b>dies</b>das</a><nav><a href="#cats">Entdecken</a><a href="#c/0">Immobilien</a><a href="#c/1">Fahrzeuge</a><a href="#c/10">Dienstleistungen</a><a href="#c/14">Nachbarschaft</a></nav><a class="search" href="#s">${ic('search')}<span>Wonach suchst du?</span><span class="loc">${ic('pin')}Berlin</span></a><div class="act"><a class="ab" href="#chats">${ic('chat')}Chats</a><a class="ab" href="#me">${ic('user')}Konto</a><a class="ab o" href="#neu/1">${ic('plus')}Inserieren</a></div></header>`;
 const nav=a=>`<nav class="nav"><a href="#" class="${a=='start'?'on':''}">${ic('home')}Start</a><a href="#s" class="${a=='s'?'on':''}">${ic('search')}Suchen</a><a href="#neu/1" class="plus"><i>${ic('plus')}</i><span>Inserieren</span></a><a href="#chats" class="${a=='chats'?'on':''}">${ic('chat')}Chats</a><a href="#me" class="${a=='me'?'on':''}">${ic('user')}Mein Bereich</a></nav>`;
 const row=(href,name,cnt,{d='',lead='',cls=''}={})=>`<a class="row ${cls}" href="${href}">${lead}<div class="t"><div class="n">${name}</div>${d?`<div class="d">${d}</div>`:''}</div>${cnt!=null?`<span class="c">${fmt(cnt)}</span>`:''}${ic('chev','ch')}</a>`;
 const lcard=x=>`<a class="lc" href="#a/${encodeURIComponent(x.id)}"><img loading="lazy" src="${x.img}" alt=""><div class="p"><div class="pr">${x.p}</div><div class="ti">${x.t}</div><div class="me">${x.c} · ${x.d}</div>${x.tp?'<span class="badge">Top-Anzeige</span>':''}</div><span class="hz">${ic('heart')}</span></a>`;
@@ -215,13 +248,13 @@ function vRes(parts){
 
 function vAd(id){
  const [k,i]=decodeURIComponent(id).split(/:(?=\d+$)/);const s=h(k+':'+i);const x=items(k,'Angebot',+i+1)[+i];
- return `<div class="gal"><img src="${x.img}" alt=""><div class="ab"><button class="ib" onclick="history.back()">${ic('back')}</button><span style="display:flex;gap:8px"><button class="ib">${ic('share')}</button><button class="ib">${ic('heart')}</button></span></div><span class="k">1 / ${3+s%8}</span></div>
+ return `<div class="adw"><div><div class="gal"><img src="${x.img}" alt=""><div class="ab"><button class="ib" onclick="history.back()">${ic('back')}</button><span style="display:flex;gap:8px"><button class="ib">${ic('share')}</button><button class="ib">${ic('heart')}</button></span></div><span class="k">1 / ${3+s%8}</span></div></div><div>
  <div class="pad"><div class="dp">${x.p}</div><div class="dt">${x.t}</div><div class="me" style="font-size:14px;display:flex;gap:6px;align-items:center">${ic('pin')}${x.c} · ${x.d}</div></div>
  <div class="facts"><div><small>Zustand</small>Gebraucht – sehr gut</div><div><small>Versand</small>Abholung oder Versand</div><div><small>Anzeigen-Nr.</small>${s%9000000+1000000}</div><div><small>Aufrufe</small>${fmt(20+s%900)}</div></div>
  <div class="pad"><div class="fl" style="margin-top:6px">Beschreibung</div><div class="txt">Verkaufe hier meinen Artikel in sehr gutem Zustand. Keine Kratzer, voll funktionsfähig. Abholung in ${x.c} oder Versand gegen Aufpreis möglich. Bei Fragen gerne schreiben.</div></div>
  <div class="seller"><span class="av">MK</span><div style="flex:1"><div style="font-weight:600">Michael K.</div><div class="me">Privat · Aktiv seit 2023 · antwortet meist in 1 Std.</div></div>${ic('chev')}</div>
- <div class="hint">${ic('shield')}<div>Sicher bezahlen: Zahle erst, wenn du die Ware gesehen hast. Nie Vorkasse an Unbekannte.</div></div><div style="height:90px"></div>
- <div class="cta"><button class="btn gh sqb">${ic('phone')}</button><a class="btn" href="#chat">${ic('chat')}Nachricht schreiben</a></div>`}
+ <div class="hint">${ic('shield')}<div>Sicher bezahlen: Zahle erst, wenn du die Ware gesehen hast. Nie Vorkasse an Unbekannte.</div></div><div class="sp" style="height:90px"></div>
+ <div class="cta"><button class="btn gh sqb">${ic('phone')}</button><a class="btn" href="#chat">${ic('chat')}Nachricht schreiben</a></div></div></div>`}
 
 function vSearch(){
  return `<div class="note">Design-Vorschau – nur Optik, Beispieldaten</div><header class="top"><div class="bar"><button class="ib" onclick="history.back()">${ic('back')}</button><div class="search" style="margin:0;flex:1;height:44px;border-color:var(--or)">${ic('search')}<span style="color:var(--tx)">iPhone 15<b style="color:var(--or);font-weight:400">|</b></span>${ic('x')}</div></div></header>
@@ -277,7 +310,7 @@ function openLoc(){sheet(`<div class="sb"><h3>Standort</h3><div class="in" style
 function render(){
  closeAll();const r=(location.hash||'#').slice(1).split('/');let v;
  switch(r[0]){case'c':v=vCat(r[1].split('.').map(Number));break;case'm':v=vModels(r[1],decodeURIComponent(r[2]));break;case'r':v=vRes(r.slice(1));break;case'a':v=vAd(r[1]);break;case's':v=vSearch();break;case'neu':v=vNeu(+r[1]||1);break;case'chats':v=vChats();break;case'chat':v=vChat();break;case'me':v=vMe();break;case'cats':v=vAllCats();break;default:v=vHome()}
- $('#app').innerHTML=v;window.scrollTo(0,0)}
+ const A=$('#app');A.className=(r[0]===''||r[0]==='')&&!location.hash.slice(1)?'home':(['neu','chat','chats','me','s'].includes(r[0])?'n':'');$('#dt').innerHTML=dtop();A.innerHTML=v;window.scrollTo(0,0)}
 addEventListener('hashchange',render);render();
 </script>
 </body>
