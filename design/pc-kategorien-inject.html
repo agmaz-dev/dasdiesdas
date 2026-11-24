@@ -31,7 +31,7 @@ function href(name){return VIEW[name]?'#'+VIEW[name]:'#k/'+encodeURIComponent(na
 function row(h,name,cnt,d,cls,lead){return '<a class="ddr '+(cls||'')+'" href="'+h+'">'+(lead||'')+'<div class="t"><div class="n">'+esc(name)+'</div>'+(d?'<div class="d">'+esc(d)+'</div>':'')+'</div>'+(cnt!=null?'<span class="c">'+cnt+'</span>':'')+'<span class="ch">›</span></a>'}
 function panel(title,back,allCnt,groups){
  var h='<div class="ddp"><h2>'+(back?'<a href="'+back+'" title="Zurück">‹</a>':'')+esc(title)+'</h2><div class="ddg">';
- if(allCnt!=null)h+='<a class="ddr all" data-ddall><span class="sq">▦</span><div class="t"><div class="n">Alle Anzeigen in „'+esc(title)+'“</div></div><span class="c">'+allCnt+'</span><span class="ch">›</span></a>';
+ if(allCnt!=null)h+='<a class="ddr all" data-ddall><span class="sq">▦</span><div class="t"><div class="n">'+(title==='Kategorien'?'Alle Anzeigen':'Alle Anzeigen in „'+esc(title)+'“')+'</div></div><span class="c">'+allCnt+'</span><span class="ch">›</span></a>';
  groups.forEach(function(g,i){if(i>0||g.label)h+='</div><h3>'+esc(g.label||'')+'</h3><div class="ddg">';h+=g.rows.join('')});
  return h+'</div></div>'}
 function enhance(sec){
