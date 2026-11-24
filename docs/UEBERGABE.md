@@ -2,6 +2,8 @@
 
 Zuerst lesen, dann `docs/STAND.md`.
 
+**Neu (24.11.2026): Katalog-Entwurf** – neuer Aufbau von Katalog, Filtern, KI-Suche und „Anzeige aufgeben“ mit allen Entscheidungen und offenen Punkten: `docs/katalog-entwurf/KONZEPT.md` (klickbarer Entwurf: `docs/katalog-entwurf/index.html` + `data.json`).
+
 ## Arbeitsregeln (Nutzerwunsch, verbindlich)
 - Antworten auf Deutsch, kurz, sachlich, klar.
 - Token-effizient arbeiten. Keine langen Texte.

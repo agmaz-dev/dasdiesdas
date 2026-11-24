@@ -17,6 +17,10 @@ Stand: 23.11.2026
 - Cloudflare-Worker „dasdiesdas“: https://dasdiesdas.taxi-monitor-ber.workers.dev
 - Cloudflare-Konto-ID: d6efd028ea386766519a2721a3782ce9
 
+## Katalog-Entwurf (24.11.2026)
+- Neuer Katalog-/Filteraufbau abgestimmt, noch nicht in die Seite übernommen: `docs/katalog-entwurf/KONZEPT.md`
+- Offene Punkte dort in Abschnitt 7
+
 ## Nächste Schritte (vereinbart)
 1. Inserieren in 4 Schritten (Foto zuerst) mit Preisvorschlag aus ähnlichen Anzeigen
 2. Umbau für Cloudflare: Datenbank D1 (statt PostgreSQL), Bilder in R2 (EU), Bildverarbeitung ohne sharp,
