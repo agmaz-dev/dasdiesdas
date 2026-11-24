@@ -1,0 +1,68 @@
+<style>
+.ddp{margin:8px 0 24px}
+.ddp h2{display:flex;align-items:center;gap:12px;margin:0 0 14px;font-size:26px;font-weight:700;color:#f3f4f6}
+.ddp h2 a{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#f97316;background:#1d2127;border:1px solid #272c34;font-size:20px;text-decoration:none}
+.ddp h3{margin:22px 0 10px;font-size:12px;letter-spacing:.8px;text-transform:uppercase;color:#9aa1ac;font-weight:600}
+.ddg{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.ddr{display:flex;align-items:center;gap:14px;min-height:64px;padding:10px 14px;background:#16191e;border:1px solid #272c34;border-radius:14px;color:#f3f4f6;text-decoration:none;transition:.15s}
+.ddr:hover{border-color:#f97316;background:#1d2127}
+.ddr .t{flex:1;min-width:0}.ddr .n{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ddr .d{font-size:13px;color:#9aa1ac;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ddr .c{color:#9aa1ac;font-size:15px;font-variant-numeric:tabular-nums}.ddr .ch{color:#f97316;font-size:22px;line-height:1}
+.ddr.z .n{color:#c4c9d0;font-weight:500}.ddr.z .ch{color:#6b7280}
+.ddr.all{grid-column:1/-1;background:linear-gradient(90deg,rgba(249,115,22,.16),rgba(249,115,22,.03));border-color:rgba(249,115,22,.4);box-shadow:inset 3px 0 0 #f97316;cursor:pointer}
+.ddr.all .c{color:#f97316;font-weight:700}
+.ddr .sq{width:40px;height:40px;border-radius:10px;background:#1d2127;display:grid;place-items:center;color:#9aa1ac;font-weight:700;font-size:14px;flex:none}
+.ddr.all .sq{background:rgba(249,115,22,.2);color:#f97316}
+.dde{margin-top:20px;padding:28px;text-align:center;background:#16191e;border:1px dashed #3a404a;border-radius:16px;color:#9aa1ac}
+.dde b{display:block;color:#f3f4f6;font-size:18px;margin-bottom:6px}
+.dde a{display:inline-block;margin-top:14px;padding:12px 20px;border-radius:12px;background:#ea580c;color:#fff;font-weight:700;text-decoration:none}
+.ddhide{display:none!important}
+</style>
+<section data-view="ddk" data-title="Kategorie | dasdiesdas" hidden id="ddk"></section>
+<script>
+(function(){
+var TREE=__TREE__;
+var esc=function(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')};
+var VIEW={};document.querySelectorAll('section[data-view]').forEach(function(s){var t=(s.getAttribute('data-title')||'').split(' | ')[0];if(t&&!VIEW[t])VIEW[t]=s.getAttribute('data-view')});
+function find(name,list,path){list=list||TREE;path=path||[];for(var i=0;i<list.length;i++){if(list[i].n===name)return path.concat([list[i]]);if(list[i].c){var r=find(name,list[i].c,path.concat([list[i]]));if(r)return r}}return null}
+function sub(n){return n&&n.c?n.c.slice(0,3).map(function(c){return c.n}).join(', ')+' & mehr':''}
+function href(name){return VIEW[name]?'#'+VIEW[name]:'#k/'+encodeURIComponent(name)}
+function row(h,name,cnt,d,cls,lead){return '<a class="ddr '+(cls||'')+'" href="'+h+'">'+(lead||'')+'<div class="t"><div class="n">'+esc(name)+'</div>'+(d?'<div class="d">'+esc(d)+'</div>':'')+'</div>'+(cnt!=null?'<span class="c">'+cnt+'</span>':'')+'<span class="ch">›</span></a>'}
+function panel(title,back,allCnt,groups){
+ var h='<div class="ddp"><h2>'+(back?'<a href="'+back+'" title="Zurück">‹</a>':'')+esc(title)+'</h2><div class="ddg">';
+ if(allCnt!=null)h+='<a class="ddr all" data-ddall><span class="sq">▦</span><div class="t"><div class="n">'+(title==='Kategorien'?'Alle Anzeigen':'Alle Anzeigen in „'+esc(title)+'“')+'</div></div><span class="c">'+allCnt+'</span><span class="ch">›</span></a>';
+ groups.forEach(function(g,i){if(i>0||g.label)h+='</div><h3>'+esc(g.label||'')+'</h3><div class="ddg">';h+=g.rows.join('')});
+ return h+'</div></div>'}
+function enhance(sec){
+ if(sec.getAttribute('data-dd'))return;var aside=sec.querySelector('aside');if(!aside)return;
+ var navs=[].slice.call(aside.querySelectorAll('nav')).filter(function(n){return n.querySelector('ul a')});if(!navs.length)return;
+ sec.setAttribute('data-dd','1');
+ var first=navs[0],title=(first.querySelector('p')||{}).textContent||'Kategorien',backA=first.querySelector(':scope > a'),node=(find(title)||[]).slice(-1)[0];
+ var total=0,groups=[];
+ navs.forEach(function(nv,i){var label=i?((nv.querySelector('p')||{}).textContent||nv.getAttribute('aria-label')||''):'';
+  var rows=[].slice.call(nv.querySelectorAll('ul a')).map(function(a){var sp=a.querySelectorAll('span'),name=(sp[0]||a).textContent.trim(),cnt=sp[1]?sp[1].textContent.trim():null,h=a.getAttribute('href');
+   if(i===0&&cnt)total+=parseInt(cnt,10)||0;if(h==='#hinweis')h=href(name);var ch=(find(name,node&&node.c?node.c:TREE)||[]).slice(-1)[0];
+   return row(h,name,cnt,i===0?sub(ch):'',cnt==='0'?'z':'',i?'<span class="sq">'+esc(name.replace(/[^A-Za-zÄÖÜäöü0-9]/g,'').slice(0,2).toUpperCase())+'</span>':'')});
+  groups.push({label:i?label:'',rows:rows});nv.classList.add('ddhide')});
+ var box=document.createElement('div');box.innerHTML=panel(title.trim(),backA?backA.getAttribute('href'):null,total,groups);
+ var grid=aside.parentNode;grid.parentNode.insertBefore(box,grid);
+ var all=box.querySelector('[data-ddall]');if(all)all.onclick=function(){grid.scrollIntoView({behavior:'smooth'})};
+}
+function kview(name){
+ var p=find(name),n=p?p[p.length-1]:{n:name},parent=p&&p.length>1?p[p.length-2].n:null;
+ var rows=(n.c||[]).map(function(c){return row(href(c.n),c.n,null,sub(c),'')});
+ var crumbs='<nav style="font-size:14px;color:#9aa1ac;margin-bottom:14px"><a href="#start" style="color:inherit">Startseite</a> › <a href="#alle" style="color:inherit">Alle Anzeigen</a>'+(parent?' › <a href="'+href(parent)+'" style="color:inherit">'+esc(parent)+'</a>':'')+' › <span style="color:#f3f4f6">'+esc(n.n)+'</span></nav>';
+ var el=document.getElementById('ddk');
+ el.innerHTML=crumbs+panel(n.n,parent?href(parent):'#alle',null,[{rows:rows}])+'<div class="dde"><b>Noch keine Anzeigen in „'+esc(n.n)+'“</b>In der Vorschau gibt es hier noch keine Beispielanzeigen.<br><a href="#aufgeben">Als Erster inserieren</a></div>';
+ document.querySelectorAll('section[data-view]').forEach(function(s){s.hidden=s!==el});document.title=n.n+' | dasdiesdas';window.scrollTo(0,0)}
+function run(){var id=(location.hash||'#start').slice(1);
+ if(id.indexOf('k/')===0){kview(decodeURIComponent(id.slice(2)));return}
+ var sec=document.querySelector('section[data-view]:not([hidden])');if(sec)enhance(sec)}
+document.querySelectorAll('header nav a').forEach(function(a){var t=a.textContent.trim();
+ if(t==='Mieten')a.setAttribute('href','#mieten-berlin');
+ if(t==='Dienstleistungen')a.setAttribute('href','#k/'+encodeURIComponent('Handwerker & Dienstleistungen'));
+ if(t==='Nachbarschaft')a.setAttribute('href','#k/'+encodeURIComponent('Nachbarschaft & Veranstaltungen'))});
+window.addEventListener('hashchange',run);run();
+})();
+</script>

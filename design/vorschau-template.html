@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d0f12">
+<title>dasdiesdas – Design-Vorschau</title>
+<style>
+:root{--bg:#0d0f12;--s1:#16191e;--s2:#1d2127;--bd:#272c34;--tx:#f3f4f6;--mu:#9aa1ac;--or:#f97316;--orb:#ea580c;--te:#2dd4bf;--r:14px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:#050607;color:var(--tx);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+body{display:flex;flex-direction:column;align-items:center}#dt{width:100%;position:sticky;top:0;z-index:25}
+#app{width:100%;max-width:480px;min-height:100vh;background:var(--bg);position:relative;padding-bottom:88px}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.note{background:#1a1206;color:#fdba74;font-size:12px;text-align:center;padding:6px 10px}
+.top{position:sticky;top:0;z-index:20;background:rgba(13,15,18,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--bd)}
+.bar{display:flex;align-items:center;gap:10px;height:56px;padding:0 12px}
+.bar h1{flex:1;margin:0;font-size:18px;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--or)}
+.ib:active{background:var(--s2)}
+.logo{font-weight:800;font-size:22px;letter-spacing:-.5px;flex:1;text-align:center}.logo b{color:var(--or);font-weight:800}
+.loc{display:flex;align-items:center;gap:3px;color:var(--or);font-size:14px;font-weight:600}
+.loc svg{width:18px;height:18px}
+.search{margin:4px 12px 12px;display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);height:48px;padding:0 12px;color:var(--mu);font-size:15px}
+.search span{flex:1}.search .f{color:var(--or)}
+.sec{display:flex;justify-content:space-between;align-items:center;padding:16px 16px 8px;font-size:12px;letter-spacing:.8px;text-transform:uppercase;color:var(--mu);font-weight:600}
+.sec a{color:var(--or);text-transform:none;letter-spacing:0;font-size:14px}
+.list{display:flex;flex-direction:column;gap:8px;padding:0 12px}
+.row{display:flex;align-items:center;gap:14px;min-height:64px;padding:10px 12px;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r)}
+.row:active{background:var(--s2)}
+.row .t{flex:1;min-width:0}
+.row .n{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .d{font-size:13px;color:var(--mu);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .c{color:var(--mu);font-size:15px;font-variant-numeric:tabular-nums}
+.row .ch{color:var(--or)}
+.row.sm{min-height:56px}.row.sm .n{font-weight:500}.row.sm .ch{color:var(--mu)}
+.row.all{background:linear-gradient(90deg,rgba(249,115,22,.16),rgba(249,115,22,.03));border-color:rgba(249,115,22,.35);box-shadow:inset 3px 0 0 var(--or)}
+.row.all .n,.row.all .c,.row.all .ch{color:var(--or)}.row.all .n{color:var(--tx)}
+.ci{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:#fff;flex:none}
+.ci svg{width:24px;height:24px}
+.sq{width:40px;height:40px;border-radius:10px;background:var(--s2);display:grid;place-items:center;color:var(--mu);font-weight:700;font-size:15px;flex:none}
+.row.all .sq{background:rgba(249,115,22,.2);color:var(--or)}
+.hs{display:flex;gap:10px;overflow-x:auto;padding:0 12px 4px;scrollbar-width:none}.hs::-webkit-scrollbar{display:none}
+.card{flex:none;width:150px;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}
+.card img,.lc img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--s2)}
+.card .p{padding:8px 10px}.pr{color:var(--or);font-weight:700;font-size:16px}
+.ti{font-size:14px;line-height:1.3;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.me{font-size:12px;color:var(--mu);margin-top:4px}
+.tools{display:flex;gap:8px;padding:10px 12px;overflow-x:auto;scrollbar-width:none}
+.chip{flex:none;display:flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:999px;background:var(--s2);border:1px solid var(--bd);font-size:14px;white-space:nowrap}
+.chip.on{border-color:var(--or);color:var(--or);background:rgba(249,115,22,.1)}
+.chip svg{width:16px;height:16px}
+.cnt{padding:2px 12px 8px;color:var(--mu);font-size:13px}
+.lc{display:flex;gap:12px;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;position:relative}
+.lc img{width:128px;aspect-ratio:auto;height:112px;flex:none}
+.lc .p{padding:10px 36px 10px 0;min-width:0;flex:1}
+.lc .hz{position:absolute;right:8px;top:8px;color:var(--mu)}
+.badge{display:inline-block;font-size:11px;padding:2px 6px;border-radius:6px;background:rgba(45,212,191,.12);color:var(--te);margin-top:6px}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:30;background:rgba(17,19,23,.97);backdrop-filter:blur(10px);border-top:1px solid var(--bd);display:flex;align-items:flex-end;justify-content:space-around;height:72px;padding-bottom:env(safe-area-inset-bottom)}
+.nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--mu);padding-bottom:10px}
+.nav a.on{color:var(--or)}
+.nav .plus{position:relative;top:-14px;padding:0}
+.nav .plus i{width:58px;height:58px;border-radius:50%;background:var(--or);display:grid;place-items:center;color:#fff;box-shadow:0 6px 20px rgba(249,115,22,.45);border:4px solid var(--bg)}
+.nav .plus i svg{width:28px;height:28px;stroke-width:2.4}
+.nav .plus span{color:var(--or);font-weight:600;margin-top:2px}
+.ov{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:.25s}
+.ov.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:84%;max-width:360px;z-index:41;background:var(--s1);border-right:1px solid var(--bd);transform:translateX(-102%);transition:.28s;overflow-y:auto;padding-bottom:20px}
+.drawer.on{transform:none}
+.dh{padding:22px 18px 16px;border-bottom:1px solid var(--bd)}
+.dh .logo{text-align:left;display:flex;align-items:center;gap:8px;font-size:24px}
+.dh .logo svg{color:var(--or);width:28px;height:28px}
+.dh small{color:var(--mu);font-size:13px}
+.di{display:flex;align-items:center;gap:14px;padding:13px 14px;margin:2px 8px;border-radius:12px;font-size:15px}
+.di.on{background:rgba(249,115,22,.16)}.di.on svg:first-child{color:var(--or)}
+.di span{flex:1}.di .ch{color:var(--mu);width:18px;height:18px}
+.di svg{color:var(--mu)}
+.di.cat svg{color:var(--or)}
+.dl{padding:16px 22px 6px;font-size:12px;letter-spacing:.8px;color:var(--mu);font-weight:600}
+.sheet{position:fixed;left:50%;bottom:0;width:100%;max-width:480px;z-index:41;background:var(--s1);border-radius:20px 20px 0 0;border-top:1px solid var(--bd);transform:translate(-50%,105%);transition:.28s;max-height:86vh;display:flex;flex-direction:column}
+.sheet.on{transform:translate(-50%,0)}
+.sheet .gr{width:40px;height:4px;border-radius:4px;background:#3a404a;margin:8px auto}
+.sheet .sb{overflow-y:auto;padding:0 16px 16px}
+.sheet h3{margin:4px 0 8px;font-size:18px;display:flex;justify-content:space-between;align-items:center}
+.sheet h3 button{color:var(--or);font-size:14px;font-weight:500}
+.fl{font-size:13px;color:var(--mu);margin:16px 0 8px;font-weight:600}
+.two{display:flex;gap:10px}
+.in{flex:1;height:48px;border-radius:12px;background:var(--s2);border:1px solid var(--bd);display:flex;align-items:center;padding:0 12px;color:var(--mu);font-size:15px;gap:8px}
+.wrap{display:flex;flex-wrap:wrap;gap:8px}
+.sf{padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--bd)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:52px;border-radius:14px;background:var(--orb);color:#fff;font-weight:700;font-size:16px}
+.btn.gh{background:var(--s2);border:1px solid var(--bd);color:var(--tx)}
+.gal{position:relative}.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.gal .k{position:absolute;right:12px;bottom:12px;background:rgba(0,0,0,.6);border-radius:999px;padding:4px 10px;font-size:12px}
+.gal .ab{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between}
+.gal .ab .ib{background:rgba(0,0,0,.5);color:#fff}
+.pad{padding:14px 16px}
+.dp{font-size:26px;font-weight:800;color:var(--or)}
+.dt{font-size:19px;font-weight:600;margin:4px 0 6px;line-height:1.3}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin:6px 16px}
+.facts div{background:var(--s1);padding:10px 12px;font-size:14px}.facts small{display:block;color:var(--mu);font-size:12px}
+.txt{color:#d1d5db;font-size:15px;line-height:1.55}
+.seller{display:flex;align-items:center;gap:12px;margin:6px 16px;padding:12px;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r)}
+.av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--or),#9a3412);display:grid;place-items:center;font-weight:700;flex:none}
+.cta{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:31;display:flex;gap:10px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(17,19,23,.97);border-top:1px solid var(--bd)}
+.cta .btn{flex:1}.cta .sqb{width:52px;flex:none}
+.steps{display:flex;gap:6px;padding:4px 16px 0}.steps i{flex:1;height:4px;border-radius:4px;background:var(--bd)}.steps i.on{background:var(--or)}
+.stl{padding:6px 16px 0;color:var(--mu);font-size:13px}
+.h2{font-size:22px;font-weight:700;margin:10px 16px 4px}
+.ph{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 16px}
+.ph div{aspect-ratio:1;border-radius:12px;border:1.5px dashed #3a404a;display:grid;place-items:center;color:var(--mu)}
+.ph div.big{grid-column:span 3;aspect-ratio:2/1;border-color:var(--or);color:var(--or);background:rgba(249,115,22,.06);flex-direction:column;display:flex;align-items:center;justify-content:center;gap:6px;font-weight:600}
+.ph div.big svg{width:34px;height:34px}
+.hint{margin:8px 16px;padding:12px;border-radius:12px;background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.3);color:#99f6e4;font-size:14px;display:flex;gap:10px}
+.hint svg{color:var(--te)}
+.fld{margin:0 16px 12px}.fld label{display:block;font-size:13px;color:var(--mu);margin-bottom:6px}
+.fld .in.ta{height:110px;align-items:flex-start;padding-top:12px}
+.hello{padding:14px 16px 2px}.hello h2{margin:0;font-size:26px}.hello p{margin:2px 0 0;color:var(--mu)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 12px}
+.stats div{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:12px}.stats b{display:block;font-size:22px}.stats small{color:var(--mu);font-size:12px}
+.msg{display:flex;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--bd)}
+.msg img{width:52px;height:52px;border-radius:12px;object-fit:cover}
+.msg .t{flex:1;min-width:0}.msg .n{font-weight:600;font-size:15px}.msg .d{color:var(--mu);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--or)}
+.recent{display:flex;align-items:center;gap:12px;padding:12px 16px;color:#d1d5db;border-bottom:1px solid var(--bd)}.recent svg{color:var(--mu)}
+.tip{white-space:nowrap;position:fixed;z-index:29;bottom:96px;left:50%;transform:translateX(-50%);background:var(--orb);color:#fff;padding:10px 14px;border-radius:12px;font-size:14px;font-weight:600;display:flex;gap:10px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.tip:after{content:"";position:absolute;bottom:-6px;left:50%;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:var(--orb)}
+.empty{height:12px}
+
+.dtop{display:none}
+@media(min-width:900px){html,body{overflow-x:hidden}
+#app{max-width:1200px;padding-bottom:40px}#app.n{max-width:720px}
+.nav,.tip{display:none}
+#dt{background:rgba(13,15,18,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--bd)}.dtop{display:flex;align-items:center;gap:18px;height:68px;padding:0 24px;max-width:1200px;margin:0 auto;white-space:nowrap}.row.all{grid-column:1/-1}
+.dtop .logo{flex:none;font-size:24px}
+.dtop nav{display:flex;gap:16px;font-size:14px;color:#d1d5db}.dtop nav a:hover{color:var(--or)}
+.dtop .search{flex:1;margin:0;height:44px;min-width:140px;max-width:360px}.dtop .search span{overflow:hidden;text-overflow:ellipsis}
+.dtop .act{display:flex;gap:10px;align-items:center;margin-left:auto}
+.dtop .ab{display:flex;align-items:center;gap:6px;height:42px;padding:0 14px;border-radius:12px;border:1px solid var(--bd);font-size:14px;font-weight:600}
+.dtop .ab.o{background:var(--orb);border-color:var(--orb);color:#fff}
+.dtop .ab svg{width:18px;height:18px}
+#app.home .top{display:none}
+.top{position:static}.top .bar{height:60px;padding:0 16px}.top .bar h1{text-align:left;font-size:22px}
+.note{border-radius:0}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;padding:0 24px}
+.sec{padding:22px 24px 10px}.hs{padding:0 24px 4px}.tools,.cnt{padding-left:24px;padding-right:24px}
+.card{width:210px}
+.lc{flex-direction:column}.lc img{width:100%;height:auto;aspect-ratio:4/3}.lc .p{padding:12px 40px 14px 14px}
+.lc .hz{background:rgba(0,0,0,.5);color:#fff;border-radius:50%;padding:6px;display:grid}
+.adw{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;padding:24px}
+.adw .gal img{border-radius:16px}.adw .facts,.adw .seller,.adw .hint{margin-left:0;margin-right:0}.adw .pad{padding:0 0 14px}
+.adw .cta{position:static;transform:none;max-width:none;background:none;border:0;padding:12px 0}
+.adw .sp{display:none}
+.cta{max-width:720px}
+.sheet{max-width:560px;bottom:auto;top:50%;border-radius:20px;border:1px solid var(--bd);transform:translate(-50%,-40%);opacity:0;pointer-events:none;transition:.2s}
+.sheet.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
+.hello,.stats{padding-left:24px;padding-right:24px}
+.ph{grid-template-columns:repeat(4,1fr)}.ph div.big{grid-column:span 4;aspect-ratio:3/1}
+}
+@media(min-width:900px) and (max-width:1199px){.dtop nav{display:none}}
+</style>
+</head>
+<body>
+<div id="dt"></div><div id="app"></div>
+<div class="ov" id="ov" onclick="closeAll()"></div>
+<aside class="drawer" id="drawer"></aside>
+<div class="sheet" id="sheet"></div>
+<script>
+const TREE=__TREE__;const BRANDS=__BRANDS__;
+const P={
+menu:'M4 6h16M4 12h16M4 18h16',search:'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3',chev:'m9 6 6 6-6 6',back:'M19 12H5M12 19l-7-7 7-7',
+pin:'M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21zM12 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z',down:'m6 9 6 6 6-6',
+chat:'M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z',user:'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0',plus:'M12 5v14M5 12h14',
+home:'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',sliders:'M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1M15 4v4M9 10v4M17 16v4',
+heart:'M12 20s-8-4.6-8-10.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5C20 15.4 12 20 12 20z',bell:'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0',
+grid:'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',cam:'M3 8h4l2-3h6l2 3h4v12H3zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',x:'M6 6l12 12M18 6 6 18',
+out:'M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10',cog:'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 14H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10 3V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 21 10h0a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z',
+share:'M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13',phone:'M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z',
+clock:'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2',spark:'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z',
+star:'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z',list:'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',tag:'M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8zM7.5 7.5h.01',
+help:'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01',shield:'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z',
+car:'M5 16V12l2-5h10l2 5v4zM5 16v3h3v-3M16 16v3h3v-3M8 12h8',bike:'M5 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM5 15l4-6h5l5 6M12 9l-2-3H8'
+};
+const CI=[
+['M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z','#c2410c'],
+['M5 16V12l2-5h10l2 5v4zM5 16v3h3v-3M16 16v3h3v-3M8 12h8','#55692c'],
+['M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z','#0f766e'],
+['M8 2h8a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM11 18h2','#1d4ed8'],
+['M4 11V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3M2 13a2 2 0 0 1 4 0v2h12v-2a2 2 0 0 1 4 0v5H2zM5 18v2M19 18v2','#7c4a2d'],
+['M8 3 3 6l2 5 2-1v11h10V10l2 1 2-5-5-3a4 4 0 0 1-8 0z','#0e7490'],
+['M12 21a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM9.5 12.5h.01M14.5 12.5h.01M10 16a3 3 0 0 0 4 0M7 7 5 4.5M17 7l2-2.5','#db2777'],
+['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7l4 3-1.5 4.5h-5L8 10zM12 3v4M16 10l4.5-1M14.5 14.5 17 19M9.5 14.5 7 19M8 10 3.5 9','#16a34a'],
+['M12 13c-3 0-5 3-5 5 0 1.5 1.5 2 2.5 2s1.5-.5 2.5-.5 1.5.5 2.5.5 2.5-.5 2.5-2c0-2-2-5-5-5zM5 11.5a1.5 2 0 1 0 3 0 1.5 2 0 1 0-3 0M9 6.5a1.5 2 0 1 0 3 0 1.5 2 0 1 0-3 0M13 6.5a1.5 2 0 1 0 3 0 1.5 2 0 1 0-3 0M16.5 11.5a1.5 2 0 1 0 3 0 1.5 2 0 1 0-3 0','#0284c7'],
+['M3 17a3 3 0 1 0 6 0 3 3 0 0 0-6 0M16 18a2 2 0 1 0 4 0 2 2 0 0 0-4 0M9 17h7M5 14V7h6l2 7M13 10h6v6','#7c3aed'],
+['M15 12l-8.5 8.5a2.1 2.1 0 0 1-3-3L12 9M17.6 15 22 10.6l-6.6-6.6H11l2 2v3l2 2','#2563eb'],
+['M22 10 12 5 2 10l10 5zM6 12v5c3 2 9 2 12 0v-5M22 10v6','#15803d'],
+['M3 7h18v13H3zM8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18','#9333ea'],
+['M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2M16 3.1a4 4 0 0 1 0 7.8M22 21v-2a5 5 0 0 0-3-4.6','#e11d48'],
+['M3 5h18v16H3zM16 3v4M8 3v4M3 10h18','#d97706'],
+['M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8','#64748b']];
+const ic=(d,c='')=>`<svg class="i ${c}" viewBox="0 0 24 24"><path d="${P[d]||d}"/></svg>`;
+const $=s=>document.querySelector(s);
+const h=s=>{let x=2166136261;for(const ch of s){x^=ch.charCodeAt(0);x=Math.imul(x,16777619)}return x>>>0};
+const fmt=n=>n.toLocaleString('de-DE');
+const CAR2=["Autos","SUV, Geländewagen & Pick-up","Elektroautos","Oldtimer & Klassiker","Unfallfahrzeuge & Bastlerfahrzeuge","Fahrzeuge mit Behindertenumbau"],MOTO2=["Motorräder & Motorroller","Quads, ATV & UTV"];
+function node(path){let n={c:TREE},out=[];for(const i of path){n=n.c[i];out.push(n)}return out}
+function cnt(n,key){if(!n.c)return 3+h(key)%380;return n.c.reduce((a,c,i)=>a+cnt(c,key+'.'+i),0)}
+function brandKey(path){if(path.length!==2||path[0]!==1)return null;const nm=TREE[1].c[path[1]].n;return CAR2.includes(nm)?'cars':MOTO2.includes(nm)?'moto':null}
+const sub=n=>n.c?n.c.slice(0,3).map(c=>c.n).join(', ')+' & mehr':'';
+const ini=s=>s.replace(/[^A-Za-zÄÖÜäöü0-9]/g,'').slice(0,2).toUpperCase();
+const CITY=['Berlin-Mitte','Berlin-Kreuzberg','Berlin-Neukölln','Potsdam','Berlin-Spandau','Hamburg','München','Berlin-Pankow','Leipzig','Köln'];
+const ADJ=['Top Zustand','wie neu','gepflegt','kaum benutzt','mit Garantie','abholbereit','Schnäppchen','VB'];
+function items(key,title,n=12){const r=[];for(let k=0;k<n;k++){const s=h(key+':'+k);r.push({id:key+':'+k,img:`https://picsum.photos/seed/dd${s%100000}/480/360`,t:`${title} – ${ADJ[s%ADJ.length]}`,p:fmt(10*(1+s%400))+' €',c:CITY[s%CITY.length],d:['Heute','Gestern','Vor 2 Tagen','Vor 3 Tagen'][s%4],tp:s%5===0})}return r}
+const tb=(title,left='back',right='')=>`<div class="note">Design-Vorschau – nur Optik, Beispieldaten</div><header class="top"><div class="bar"><button class="ib" onclick="${left==='menu'?'openDrawer()':'history.back()'}">${ic(left)}</button><h1>${title}</h1>${right||'<a class="ib" href="#s">'+ic('search')+'</a>'}</div></header>`;
+const dtop=()=>`<header class="dtop"><button class="ib" onclick="openDrawer()">${ic('menu')}</button><a class="logo" href="#">das<b>dies</b>das</a><nav><a href="#cats">Entdecken</a><a href="#c/0">Immobilien</a><a href="#c/1">Fahrzeuge</a><a href="#c/10">Dienstleistungen</a><a href="#c/14">Nachbarschaft</a></nav><a class="search" href="#s">${ic('search')}<span>Wonach suchst du?</span><span class="loc">${ic('pin')}Berlin</span></a><div class="act"><a class="ab" href="#chats">${ic('chat')}Chats</a><a class="ab" href="#me">${ic('user')}Konto</a><a class="ab o" href="#neu/1">${ic('plus')}Inserieren</a></div></header>`;
+const nav=a=>`<nav class="nav"><a href="#" class="${a=='start'?'on':''}">${ic('home')}Start</a><a href="#s" class="${a=='s'?'on':''}">${ic('search')}Suchen</a><a href="#neu/1" class="plus"><i>${ic('plus')}</i><span>Inserieren</span></a><a href="#chats" class="${a=='chats'?'on':''}">${ic('chat')}Chats</a><a href="#me" class="${a=='me'?'on':''}">${ic('user')}Mein Bereich</a></nav>`;
+const row=(href,name,cnt,{d='',lead='',cls=''}={})=>`<a class="row ${cls}" href="${href}">${lead}<div class="t"><div class="n">${name}</div>${d?`<div class="d">${d}</div>`:''}</div>${cnt!=null?`<span class="c">${fmt(cnt)}</span>`:''}${ic('chev','ch')}</a>`;
+const lcard=x=>`<a class="lc" href="#a/${encodeURIComponent(x.id)}"><img loading="lazy" src="${x.img}" alt=""><div class="p"><div class="pr">${x.p}</div><div class="ti">${x.t}</div><div class="me">${x.c} · ${x.d}</div>${x.tp?'<span class="badge">Top-Anzeige</span>':''}</div><span class="hz">${ic('heart')}</span></a>`;
+
+function vHome(){
+ const cats=TREE.map((c,i)=>row('#c/'+i,c.n,null,{d:sub(c),lead:`<span class="ci" style="background:${CI[i][1]}"><svg class="i" viewBox="0 0 24 24"><path d="${CI[i][0]}"/></svg></span>`})).join('');
+ const nw=items('home','Angebot',8).map(x=>`<a class="card" href="#a/${encodeURIComponent(x.id)}"><img loading="lazy" src="${x.img}" alt=""><div class="p"><div class="pr">${x.p}</div><div class="ti">${x.t}</div><div class="me">${x.c}</div></div></a>`).join('');
+ return `<div class="note">Design-Vorschau – nur Optik, Beispieldaten</div><header class="top"><div class="bar"><button class="ib" onclick="openDrawer()">${ic('menu')}</button><div class="logo">das<b>dies</b>das</div><button class="loc" onclick="openLoc()">${ic('pin')}Berlin${ic('down')}</button></div><a class="search" href="#s">${ic('search')}<span>Wonach suchst du in Berlin?</span>${ic('sliders','f')}</a></header>
+ <div class="sec">Neu in deiner Nähe<a href="#r/n">Alle anzeigen ›</a></div><div class="hs">${nw}</div>
+ <div class="sec">Kategorien<a href="#cats">Alle anzeigen ›</a></div><div class="list">${cats}</div>
+ <div class="sec"></div><div class="list">${row('#r/n','Dein Fokus: Berlin',null,{d:'Lokale Angebote in deiner Stadt',lead:`<span class="ci" style="background:var(--s2);color:var(--or)">${ic('pin')}</span>`})}</div><div class="empty"></div>${nav('start')}<div class="tip" id="tip" onclick="this.remove()">Hier kannst du kostenlos inserieren ${ic('x')}</div>`}
+
+function vCat(path){
+ const ns=node(path),n=ns[ns.length-1],key=path.join('.');
+ const bk=brandKey(path);
+ let html=tb(n.n)+`<div class="sec">${ns.length>1?ns.slice(0,-1).map(x=>x.n).join(' › '):'Kategorie wählen'}</div><div class="list">`;
+ html+=row('#r/'+key,`Alle Anzeigen in „${n.n}“`,cnt(n,key),{cls:'all',lead:`<span class="sq">${ic('grid')}</span>`});
+ if(bk){const b=Object.keys(BRANDS[bk]);html+=`</div><div class="sec">Marken</div><div class="list">`+b.map(m=>row(`#m/${key}/${encodeURIComponent(m)}`,m,null,{d:fmt(5+h(key+m)%1500)+' Anzeigen',lead:`<span class="sq">${ini(m)}</span>`})).join('')+row(`#r/${key}`,'Weitere Marken',null,{d:'Alle anderen Marken',lead:`<span class="sq">···</span>`});}
+ else html+=n.c.map((c,i)=>c.c?row(`#c/${key}.${i}`,c.n,cnt(c,key+'.'+i),{d:sub(c)}):row(`#r/${key}.${i}`,c.n,cnt(c,key+'.'+i),{cls:'sm'})).join('');
+ return html+`</div><div class="empty"></div>`+nav('')}
+
+function vModels(key,brand){
+ const path=key.split('.').map(Number),bk=brandKey(path),ms=BRANDS[bk][brand]||[];
+ return tb(brand)+`<div class="sec">${node(path).map(x=>x.n).join(' › ')} › ${brand}</div><div class="list">`+row(`#r/${key}/${encodeURIComponent(brand)}`,`Alle ${brand}`,ms.reduce((a,m)=>a+3+h(brand+m)%300,0),{cls:'all',lead:`<span class="sq">${ic('grid')}</span>`})+ms.map(m=>row(`#r/${key}/${encodeURIComponent(brand)}/${encodeURIComponent(m)}`,m,3+h(brand+m)%300,{cls:'sm'})).join('')+`</div><div class="empty"></div>`+nav('')}
+
+function vRes(parts){
+ let title='Neu in deiner Nähe',chips=[];
+ if(parts[0]!=='n'){const path=parts[0].split('.').map(Number),ns=node(path);title=ns[ns.length-1].n;if(parts[1])title=decodeURIComponent(parts[1])+(parts[2]?' '+decodeURIComponent(parts[2]):'');chips=ns[ns.length-1].c&&!brandKey(path)?ns[ns.length-1].c.map(c=>c.n):[]}
+ const it=items(parts.join('/'),title,14);
+ return tb(title)+`<div class="tools"><button class="chip on" onclick="openFilter()">${ic('sliders')}Filter · 2</button><button class="chip" onclick="openSort()">${ic('list')}Neueste</button><button class="chip">${ic('pin')}Berlin + 10 km</button><button class="chip">${ic('bell')}Suche speichern</button></div>${chips.length?`<div class="tools" style="padding-top:0">${chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>`:''}<div class="cnt">${fmt(120+h(title)%5000)} Anzeigen</div><div class="list">${it.map(lcard).join('')}</div><div class="empty"></div>`+nav('')}
+
+function vAd(id){
+ const [k,i]=decodeURIComponent(id).split(/:(?=\d+$)/);const s=h(k+':'+i);const x=items(k,'Angebot',+i+1)[+i];
+ return `<div class="adw"><div><div class="gal"><img src="${x.img}" alt=""><div class="ab"><button class="ib" onclick="history.back()">${ic('back')}</button><span style="display:flex;gap:8px"><button class="ib">${ic('share')}</button><button class="ib">${ic('heart')}</button></span></div><span class="k">1 / ${3+s%8}</span></div></div><div>
+ <div class="pad"><div class="dp">${x.p}</div><div class="dt">${x.t}</div><div class="me" style="font-size:14px;display:flex;gap:6px;align-items:center">${ic('pin')}${x.c} · ${x.d}</div></div>
+ <div class="facts"><div><small>Zustand</small>Gebraucht – sehr gut</div><div><small>Versand</small>Abholung oder Versand</div><div><small>Anzeigen-Nr.</small>${s%9000000+1000000}</div><div><small>Aufrufe</small>${fmt(20+s%900)}</div></div>
+ <div class="pad"><div class="fl" style="margin-top:6px">Beschreibung</div><div class="txt">Verkaufe hier meinen Artikel in sehr gutem Zustand. Keine Kratzer, voll funktionsfähig. Abholung in ${x.c} oder Versand gegen Aufpreis möglich. Bei Fragen gerne schreiben.</div></div>
+ <div class="seller"><span class="av">MK</span><div style="flex:1"><div style="font-weight:600">Michael K.</div><div class="me">Privat · Aktiv seit 2023 · antwortet meist in 1 Std.</div></div>${ic('chev')}</div>
+ <div class="hint">${ic('shield')}<div>Sicher bezahlen: Zahle erst, wenn du die Ware gesehen hast. Nie Vorkasse an Unbekannte.</div></div><div class="sp" style="height:90px"></div>
+ <div class="cta"><button class="btn gh sqb">${ic('phone')}</button><a class="btn" href="#chat">${ic('chat')}Nachricht schreiben</a></div></div></div>`}
+
+function vSearch(){
+ return `<div class="note">Design-Vorschau – nur Optik, Beispieldaten</div><header class="top"><div class="bar"><button class="ib" onclick="history.back()">${ic('back')}</button><div class="search" style="margin:0;flex:1;height:44px;border-color:var(--or)">${ic('search')}<span style="color:var(--tx)">iPhone 15<b style="color:var(--or);font-weight:400">|</b></span>${ic('x')}</div></div></header>
+ <div class="sec">Vorschläge</div>${['iPhone 15 Pro','iPhone 15 Hülle','iPhone 15 128 GB'].map(s=>`<a class="recent" href="#r/3.0">${ic('search')}<span style="flex:1">${s}</span><span class="me">in Handys</span></a>`).join('')}
+ <div class="sec">Letzte Suchen<a href="#">Löschen</a></div>${['Fahrrad 28 Zoll','Sofa grau','2-Zimmer-Wohnung Berlin'].map(s=>`<a class="recent" href="#r/n">${ic('clock')}<span style="flex:1">${s}</span>${ic('x')}</a>`).join('')}
+ <div class="sec">In Kategorie suchen</div><div class="hs">${TREE.map((c,i)=>`<a class="chip" href="#c/${i}" style="height:40px"><span style="color:${CI[i][1]};filter:brightness(1.6)"><svg class="i" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="${CI[i][0]}"/></svg></span>${c.n}</a>`).join('')}</div>
+ <div class="hint" style="margin-top:16px">${ic('spark')}<div>Tipp: Tippe einfach, was du suchst – z. B. „Kinderwagen bis 100 € in Pankow“.</div></div>`+nav('s')}
+
+const STEPN=['Fotos','Kategorie','Details','Preis & Ort'];
+function vNeu(st){
+ const head=`<div class="note">Design-Vorschau – nur Optik, Beispieldaten</div><header class="top"><div class="bar"><a class="ib" href="#">${ic('x')}</a><h1>Anzeige aufgeben</h1><span class="ib"></span></div><div class="steps">${STEPN.map((_,i)=>`<i class="${i<st?'on':''}"></i>`).join('')}</div><div class="stl" style="padding-bottom:10px">Schritt ${st} von 4 · ${STEPN[st-1]}</div></header>`;
+ let b='';
+ if(st==1)b=`<div class="h2">Zeig, was du verkaufst</div><div class="stl">Gute Fotos verkaufen schneller. Bis zu 20 Bilder.</div><div class="ph"><div class="big">${ic('cam')}Fotos aufnehmen oder auswählen</div><div>${ic('plus')}</div><div>${ic('plus')}</div><div>${ic('plus')}</div></div><div class="hint">${ic('spark')}<div>Wir erkennen anhand des Fotos die passende Kategorie und schlagen dir einen Titel vor.</div></div>`;
+ if(st==2)b=`<div class="h2">Passt diese Kategorie?</div><div class="sec">Vorschlag</div><div class="list">${row('#neu/3','Elektronik › Handys & Smartphones › iPhone',null,{cls:'all',lead:`<span class="sq">${ic('spark')}</span>`})}</div><div class="sec">Andere Kategorie wählen</div><div class="list">${TREE.slice(0,6).map((c,i)=>row('#neu/3',c.n,null,{d:sub(c),lead:`<span class="ci" style="background:${CI[i][1]};width:40px;height:40px"><svg class="i" viewBox="0 0 24 24"><path d="${CI[i][0]}"/></svg></span>`})).join('')}</div>`;
+ if(st==3)b=`<div class="h2">Beschreibe deinen Artikel</div><div style="height:8px"></div><div class="fld"><label>Titel</label><div class="in" style="color:var(--tx)">iPhone 15 Pro, 256 GB, Titan Natur</div></div><div class="fld"><label>Zustand</label><div class="wrap"><span class="chip">Neu</span><span class="chip on">Sehr gut</span><span class="chip">Gut</span><span class="chip">Defekt</span></div></div><div class="fld"><label>Hersteller / Modell</label><div class="two"><div class="in" style="color:var(--tx)">Apple</div><div class="in" style="color:var(--tx)">iPhone 15 Pro</div></div></div><div class="fld"><label>Beschreibung</label><div class="in ta">Erzähl Käufern mehr: Zustand, Zubehör, Grund für den Verkauf …</div></div>`;
+ if(st==4)b=`<div class="h2">Preis und Ort</div><div style="height:8px"></div><div class="fld"><label>Preis</label><div class="in" style="color:var(--tx);font-size:20px;font-weight:700">749 €</div></div><div class="hint">${ic('spark')}<div><b>Preisvorschlag:</b> Ähnliche Anzeigen in Berlin kosten 690 – 820 €. Mit 749 € liegst du gut im Rennen.</div></div><div class="fld" style="margin-top:12px"><label>Preisart</label><div class="wrap"><span class="chip on">Festpreis</span><span class="chip">VB</span><span class="chip">Zu verschenken</span></div></div><div class="fld"><label>Standort</label><div class="in" style="color:var(--tx)">${ic('pin')}10115 Berlin-Mitte</div></div><div class="fld"><label>Versand</label><div class="wrap"><span class="chip on">Abholung</span><span class="chip on">Versand möglich</span></div></div>`;
+ const nx=st<4?`<a class="btn" href="#neu/${st+1}">Weiter</a>`:`<a class="btn" href="#">Anzeige veröffentlichen</a>`;
+ return head+b+`<div style="height:90px"></div><div class="cta">${st>1?`<a class="btn gh" style="flex:0 0 110px" href="#neu/${st-1}">Zurück</a>`:''}${nx}</div>`}
+
+function vChats(){
+ const it=items('chats','x',6),nm=['Sabine W.','Jonas','Ali K.','Petra M.','Kevin','Laura S.'],ms=['Ist der Artikel noch da?','Würden Sie 80 € nehmen?','Super, dann bis morgen um 18 Uhr!','Können Sie auch versenden?','Danke, ist angekommen 👍','Wo genau ist die Abholung?'];
+ return tb('Chats','menu',`<span class="ib"></span>`)+`<div class="tools"><span class="chip on">Alle</span><span class="chip">Kaufen</span><span class="chip">Verkaufen</span><span class="chip">Ungelesen</span></div>`+it.map((x,i)=>`<a class="msg" href="#chat"><img src="${x.img}" alt=""><div class="t"><div class="n">${nm[i]}</div><div class="d">${ms[i]}</div></div><div style="text-align:right"><div class="me">${['12:40','11:02','Gestern','Gestern','Mo','So'][i]}</div>${i<2?'<span class="dot" style="display:inline-block;margin-top:6px"></span>':''}</div></a>`).join('')+nav('chats')}
+
+function vChat(){
+ const b=(t,me)=>`<div style="display:flex;justify-content:${me?'flex-end':'flex-start'};padding:4px 12px"><div style="max-width:78%;padding:10px 12px;border-radius:16px;font-size:15px;background:${me?'var(--orb)':'var(--s2)'};${me?'border-bottom-right-radius:4px':'border-bottom-left-radius:4px'}">${t}</div></div>`;
+ return tb('Sabine W.')+`<div class="seller" style="margin:10px 12px"><img src="https://picsum.photos/seed/dd1/120/120" style="width:46px;height:46px;border-radius:10px"><div style="flex:1"><div class="pr" style="font-size:15px">95 €</div><div class="me" style="margin:0">Kinderfahrrad 20 Zoll – Top Zustand</div></div></div>`+b('Hallo, ist das Fahrrad noch zu haben?')+b('Hallo! Ja, ist noch da 🙂',1)+b('Würden Sie 80 € nehmen?')+b('85 € und es gehört Ihnen.',1)+b('Deal! Wann kann ich vorbeikommen?')+`<div style="height:90px"></div><div class="cta"><div class="in" style="flex:1">Nachricht schreiben …</div><button class="btn sqb">${ic('chev')}</button></div>`}
+
+function vMe(){
+ return tb('Mein Bereich','menu',`<a class="ib">${ic('cog')}</a>`)+`<div class="hello" style="display:flex;gap:14px;align-items:center"><span class="av" style="width:56px;height:56px;font-size:20px">FA</span><div><h2 style="font-size:20px">Hallo!</h2><p style="font-size:14px">Mitglied seit 2026 · ${ic('star')} 4,9</p></div></div>
+ <div class="sec">Deine Übersicht</div><div class="stats"><div><b>3</b><small>Aktive Anzeigen</small></div><div><b>124</b><small>Aufrufe (7 Tage)</small></div><div><b>5</b><small>Neue Nachrichten</small></div></div>
+ <div class="sec">Konto</div><div class="list">${[['list','Meine Anzeigen','3 aktiv · 1 abgelaufen'],['heart','Favoriten','12 gemerkte Anzeigen'],['bell','Gespeicherte Suchen','Benachrichtigung bei neuen Treffern'],['user','Profil & Bewertungen',''],['shield','Sicherheit & Login','Passwort, 2-Faktor'],['help','Hilfe & Kontakt','']].map(([i,n,d])=>row('#me',n,null,{d,lead:`<span class="sq">${ic(i)}</span>`})).join('')}</div>
+ <div class="sec"></div><div class="list">${row('#',`<span style="color:var(--or)">Abmelden</span>`,null,{lead:`<span class="sq" style="color:var(--or)">${ic('out')}</span>`})}</div><div class="empty"></div>`+nav('me')}
+
+function vAllCats(){return tb('Alle Kategorien')+`<div class="list" style="padding-top:12px">`+TREE.map((c,i)=>row('#c/'+i,c.n,cnt(c,''+i),{d:sub(c),lead:`<span class="ci" style="background:${CI[i][1]}"><svg class="i" viewBox="0 0 24 24"><path d="${CI[i][0]}"/></svg></span>`})).join('')+`</div><div class="empty"></div>`+nav('')}
+
+function drawer(){
+ const cur=location.hash||'#';
+ const di=(href,i,t)=>`<a class="di ${cur===href?'on':''}" href="${href}" onclick="closeAll()">${ic(i)}<span>${t}</span>${ic('chev','ch')}</a>`;
+ $('#drawer').innerHTML=`<div class="dh"><div class="logo">${ic('home')}<span>das<b>dies</b>das</span></div><small>Kaufen. Verkaufen. Einfach.</small></div><div style="padding-top:8px">${di('#','home','Startseite')}${di('#me','user','Mein Bereich')}${di('#neu/1','plus','Anzeige aufgeben')}${di('#me','heart','Favoriten')}${di('#me','bell','Gespeicherte Suchen')}</div><div class="dl">KATEGORIEN</div>${TREE.map((c,i)=>`<a class="di cat" href="#c/${i}" onclick="closeAll()"><svg class="i" viewBox="0 0 24 24"><path d="${CI[i][0]}"/></svg><span>${c.n}</span></a>`).join('')}<div style="border-top:1px solid var(--bd);margin:10px 0"></div>${di('#me','help','Hilfe & Kontakt')}<a class="di" href="#" onclick="closeAll()" style="color:var(--or)">${ic('out')}<span>Abmelden</span></a>`}
+function openDrawer(){drawer();$('#drawer').classList.add('on');$('#ov').classList.add('on')}
+function sheet(html){$('#sheet').innerHTML='<div class="gr"></div>'+html;$('#sheet').classList.add('on');$('#ov').classList.add('on')}
+function closeAll(){['#drawer','#sheet','#ov'].forEach(s=>$(s).classList.remove('on'))}
+function openFilter(){sheet(`<div class="sb"><h3>Filter <button onclick="closeAll()">Zurücksetzen</button></h3>
+ <div class="fl">Preis</div><div class="two"><div class="in">von €</div><div class="in" style="color:var(--tx)">bis 500 €</div></div>
+ <div class="fl">Standort</div><div class="in" style="color:var(--tx)">${ic('pin')}Berlin</div><div class="wrap" style="margin-top:8px">${['Ort','+5 km','+10 km','+25 km','+50 km','Ganz Deutschland'].map((x,i)=>`<span class="chip ${i==2?'on':''}">${x}</span>`).join('')}</div>
+ <div class="fl">Zustand</div><div class="wrap">${['Neu','Sehr gut','Gut','Akzeptabel','Defekt'].map(x=>`<span class="chip">${x}</span>`).join('')}</div>
+ <div class="fl">Anbieter</div><div class="wrap"><span class="chip on">Alle</span><span class="chip">Privat</span><span class="chip">Gewerblich</span></div>
+ <div class="fl">Versand</div><div class="wrap"><span class="chip">Nur Abholung</span><span class="chip">Versand möglich</span></div></div>
+ <div class="sf"><button class="btn" onclick="closeAll()">1.284 Anzeigen anzeigen</button></div>`)}
+function openSort(){sheet(`<div class="sb"><h3>Sortieren</h3>${['Neueste zuerst','Preis aufsteigend','Preis absteigend','Entfernung'].map((x,i)=>`<button class="di ${i==0?'on':''}" style="width:calc(100% - 16px)" onclick="closeAll()"><span>${x}</span></button>`).join('')}</div><div style="height:16px"></div>`)}
+function openLoc(){sheet(`<div class="sb"><h3>Standort</h3><div class="in" style="color:var(--tx)">${ic('search')}Berlin</div><button class="di" style="width:calc(100% - 16px);margin-top:10px;color:var(--or)">${ic('pin')}<span>Aktuellen Standort verwenden</span></button><div class="fl">Umkreis</div><div class="wrap">${['Nur Ort','+5 km','+10 km','+25 km','+50 km','+100 km','Ganz Deutschland'].map((x,i)=>`<span class="chip ${i==2?'on':''}">${x}</span>`).join('')}</div></div><div class="sf"><button class="btn" onclick="closeAll()">Übernehmen</button></div>`)}
+
+function render(){
+ closeAll();const r=(location.hash||'#').slice(1).split('/');let v;
+ switch(r[0]){case'c':v=vCat(r[1].split('.').map(Number));break;case'm':v=vModels(r[1],decodeURIComponent(r[2]));break;case'r':v=vRes(r.slice(1));break;case'a':v=vAd(r[1]);break;case's':v=vSearch();break;case'neu':v=vNeu(+r[1]||1);break;case'chats':v=vChats();break;case'chat':v=vChat();break;case'me':v=vMe();break;case'cats':v=vAllCats();break;default:v=vHome()}
+ const A=$('#app');A.className=(r[0]===''||r[0]==='')&&!location.hash.slice(1)?'home':(['neu','chat','chats','me','s'].includes(r[0])?'n':'');$('#dt').innerHTML=dtop();A.innerHTML=v;window.scrollTo(0,0)}
+addEventListener('hashchange',render);render();
+</script>
+</body>
+</html>
