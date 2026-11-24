@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dasdiesdas Katalog-Entwurf</title>
+<style>
+/* VOICE: ruhiger Arbeits-Prototyp, gewählte Navigation für dasdiesdas
+   IDEA: Inhaltsverzeichnis eines Katalogs, das man durchblättert
+   PICTURE: die Seite selbst – Katalog links, Anzeigen in der Mitte
+   COLOUR and TYPE: dunkles Grau, Orange als Akzent, System-Schrift
+   LAYOUT: Kopfzeile, 280px Katalog mit Eigenschaften, Anzeigenraster rechts */
+:root{color-scheme:light dark;
+--bg:light-dark(#f2f2f4,#141416);--panel:light-dark(#ffffff,#1c1c1f);--card:light-dark(#ffffff,#222226);
+--ink:light-dark(#151517,#ececef);--muted:light-dark(#6b6b72,#9a9aa3);--line:light-dark(#e2e2e6,#2c2c31);
+--hover:light-dark(#f0f0f3,#2a2a2f);--acc:#f07a1a;--accbg:light-dark(#fdebdc,#3a2614);--accink:light-dark(#b25407,#ffb170);--ph:light-dark(#ececf0,#2a2a30)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;overflow-x:clip}
+header{display:flex;align-items:center;gap:16px;padding:12px max(3vw,16px);background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap;position:sticky;top:0;z-index:10}
+.logo{font-weight:700;font-size:36px;line-height:1;letter-spacing:-.02em;cursor:pointer}.logo b{color:var(--acc)}
+.sbox{position:relative;flex:1;display:flex}
+.sbox .kic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--acc);font-size:18px;pointer-events:none}
+.sbox .kit{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:600;color:var(--accink);background:var(--accbg);border-radius:6px;padding:3px 8px;pointer-events:none}
+.hit.ki{background:var(--accbg);color:var(--accink)}.hit.ki b{color:var(--accink)}
+.kiline{display:none;margin:8px 0 0;padding:10px 12px;border:1px solid var(--acc);border-radius:10px;background:var(--accbg);color:var(--accink);font-size:14px}
+.kiline.on{display:block}
+.catnote{display:none;margin:8px 0 0;padding:10px 12px;border:1px solid var(--line);border-left:0;border-radius:10px;background:var(--panel);font-size:13px;color:var(--muted)}
+.catnote.on{display:block}
+input[type=search],input[type=text],input[type=number]{min-width:0;height:36px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);padding:0 10px;font-size:16px;width:100%}
+.sbox input{height:50px;border-radius:12px;font-size:17px;padding:0 120px 0 42px}
+.hits{top:54px!important}
+input:focus,button:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.btn{border:1px solid var(--line);border-radius:99px;padding:7px 14px;font-size:14px;background:none;color:var(--ink);cursor:pointer}
+.stat{font-size:12px;color:var(--muted)}
+.wrap{display:grid;grid-template-columns:280px minmax(0,1fr);max-width:1320px;margin:0 auto;min-height:calc(100vh - 66px)}
+aside{border-right:1px solid var(--line);padding:14px 10px 40px;background:var(--panel)}
+.crumbs{font-size:12px;color:var(--muted);margin:0 8px 10px;line-height:1.6}
+.crumb{color:var(--accink);cursor:pointer}
+.it{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;font-size:14px;cursor:pointer;min-height:38px}
+.it:hover{background:var(--hover)}
+.it .ic{width:20px;text-align:center}
+.it .n{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap}
+.it .ar{color:var(--muted);font-size:16px}
+.back{color:var(--accink)}
+.ttl{font-weight:600;font-size:16px;margin:6px 10px}
+.sep{height:1px;background:var(--line);margin:12px 6px}
+.ph-h{font-size:12px;color:var(--muted);margin:0 10px 4px}
+details{border-bottom:1px solid var(--line);padding:2px 0}
+summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;font-size:14px;font-weight:600;border-radius:8px}
+summary::-webkit-details-marker{display:none}
+summary:hover{background:var(--hover)}
+summary .st{font-weight:400;font-size:12px;color:var(--accink);margin-left:auto}
+summary::after{content:"›";color:var(--muted);transform:rotate(90deg)}
+details[open] summary::after{transform:rotate(-90deg)}
+.props{padding:4px 10px 10px}
+.p{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:5px 11px;font-size:13px;margin:0 4px 6px 0;cursor:pointer;background:none;color:var(--ink)}
+.p.on{background:var(--accbg);color:var(--accink);border-color:var(--acc)}
+.more{background:none;border:0;color:var(--accink);font-size:13px;cursor:pointer;padding:2px 0}
+.hint{font-size:11px;color:var(--muted);margin:0 0 6px}
+.rng{display:flex;gap:6px;align-items:center;margin-top:4px}.rng span{color:var(--muted)}
+main{padding:18px max(2vw,14px)}
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.head h1{font-size:20px;margin:0;font-weight:600}
+.sort{font-size:13px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 14px;min-height:6px}
+.chip{background:var(--accbg);color:var(--accink);border:0;border-radius:99px;padding:4px 10px;font-size:13px;cursor:pointer}
+.chip.x{background:none;color:var(--muted);text-decoration:underline}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
+.ph{height:120px;background:var(--ph);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:34px}
+.cb{padding:10px}.pr{color:var(--acc);font-weight:600;font-size:16px;white-space:nowrap}.ct{font-weight:500}.meta{font-size:12px;color:var(--muted)}
+.tags{margin-top:6px}.tag{display:inline-block;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin:0 3px 3px 0;color:var(--muted)}
+.note{font-size:12px;color:var(--muted);margin-top:18px}
+.hits{position:absolute;top:44px;left:0;right:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;z-index:20;max-height:420px;overflow-y:auto}
+.hit{display:flex;gap:6px;align-items:baseline;padding:9px 12px;font-size:14px;cursor:pointer;border-bottom:1px solid var(--line)}
+.hit:hover{background:var(--hover)}.hit .n{margin-left:auto;font-size:12px;color:var(--muted)}
+.load{padding:40px;color:var(--muted)}
+.kmrow{margin-top:8px}
+.form{max-width:760px}
+.form h2{font-size:20px;margin:4px 0 4px}
+.form .sub{color:var(--muted);font-size:13px;margin:0 0 16px}
+.fsec{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.fsec h3{font-size:15px;margin:0 0 10px}
+.frow{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.fld label{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
+.fld .req{color:var(--acc)}
+.fld select,.fld textarea{width:100%;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-size:16px;padding:7px 10px}
+.fld select{height:36px;padding:0 8px}
+.fld textarea{min-height:110px;resize:vertical}
+.fld .err{color:#e5484d;font-size:12px;margin-top:3px}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px;padding:4px 0}
+.chk input{width:18px;height:18px}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.thumbs img{width:84px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+.btnp{background:var(--acc);border:0;color:#fff;border-radius:10px;padding:11px 18px;font-size:15px;font-weight:600;cursor:pointer}
+.btn.on{background:var(--accbg);border-color:var(--acc);color:var(--accink)}
+.okbox{margin:10px 0;padding:10px 12px;border-radius:10px;background:var(--accbg);color:var(--accink);font-size:14px}
+.mine{outline:2px solid var(--acc)}
+.badge{display:inline-block;font-size:11px;font-weight:600;background:var(--acc);color:#fff;border-radius:6px;padding:1px 6px;margin-bottom:4px}
+.ph img{width:100%;height:100%;object-fit:cover}
+@media(max-width:800px){.wrap{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<header>
+ <span class="logo" id="home">das<b>dies</b>das</span>
+ <div class="sbox"><span class="kic" aria-hidden="true">✦</span><input id="s" type="search" placeholder="Suchen oder beschreiben, z. B. „iPhone 15 256 GB bis 600 €“ oder „3 Zimmer Neukölln mit Balkon“" aria-label="Suchen oder beschreiben, was du suchst"><span class="kit">mit KI</span><div id="hits"></div></div>
+ <button class="btn" id="postbtn">+ Anzeige aufgeben</button>
+ <button class="btn">Anmelden</button>
+</header>
+<div class="wrap">
+ <aside>
+  <div class="crumbs" id="crumbs"></div>
+  <div id="back"></div>
+  <div class="ttl" id="title"></div>
+  <div id="list"><div class="load">Katalog wird geladen …</div></div>
+  <div id="props"></div>
+ </aside>
+ <main>
+  <div id="postview" class="form" hidden></div>
+  <div id="browse">
+  <div class="kiline" id="kiline"></div>
+  <div class="catnote" id="catnote"></div>
+  <div class="head" style="margin-top:10px"><h1 id="head"></h1><span class="sort">Sortiert: Neueste zuerst</span></div>
+  <div class="chips" id="chips"></div>
+  <div class="grid" id="grid"></div>
+  </div>
+  <p class="note">Entwurf: Kategorien und Eigenschaften stammen aus dem echten Kategorienbaum der Seite (tree.ts und attributes.ts). Anzeigen und Zahlen sind ausgedacht. „Anzeige aufgeben“ nutzt denselben Katalog und genau die Eigenschaften, nach denen gefiltert wird; eine eingestellte Anzeige bleibt nur in diesem Fenster. Der Ort wird über PLZ oder Ortsname und Umkreis gesucht. Reihenfolge der Eigenschaften: erst die Sache finden (z. B. Zustand und Hersteller oder Saison und Reifengröße), dann Details, dann Preis, Übergabe und Ort – diese drei sind anfangs zugeklappt. Jede Unterscheidung gibt es nur an einer Stelle: Fahrzeugarten, Handy-Marken und Fahrradarten als Ordner, Kraftstoff (Elektro, Hybrid), Unfallwagen, Oldtimer und Umbau als Eigenschaft. Die Suche führt bei „Elektroauto“, „Oldtimer“ usw. direkt zu Autos mit passender Eigenschaft. Eigenschaften, die schon als Unterkategorien im Katalog stehen (z. B. Fahrzeugtyp bei Autos), werden nicht doppelt angezeigt. Innerhalb einer Eigenschaft gilt „oder“, zwischen Eigenschaften „und“; bei Ausstattung und Merkmalen muss alles Gewählte vorhanden sein.</p>
+ </main>
+</div>
+<script>
+{
+const BUCKETS={
+ zimmer:["1","2","3","4","5+"],zimmeranzahl:["1","2","3","4","5+"],raeume:["1–2","3–5","6–10","über 10"],
+ wohnflaeche:["bis 40 m²","40–60 m²","60–80 m²","80–100 m²","100–150 m²","über 150 m²"],
+ zimmergroesse:["bis 12 m²","12–18 m²","18–25 m²","über 25 m²"],
+ grundstuecksflaeche:["bis 300 m²","300–600 m²","600–1.000 m²","1.000–5.000 m²","über 5.000 m²"],
+ flaeche:["bis 50 m²","50–150 m²","150–500 m²","500–2.000 m²","über 2.000 m²"],
+ etage:["Souterrain","Erdgeschoss","1.–2. OG","3.–5. OG","ab 6. OG"],
+ mitbewohner:["1","2","3","4+"],schlafplaetze:["1–2","3–4","5–6","über 6"],kojen:["1–2","3–4","5–6","über 6"],betten:["bis 20","20–50","50–150","über 150"],
+ erstzulassung:["ab 2023","2019–2022","2015–2018","2010–2014","vor 2010"],
+ baujahr:["ab 2020","2010–2019","2000–2009","1980–1999","vor 1980"],
+ kilometer:["bis 20.000 km","20–50 Tsd. km","50–100 Tsd. km","100–150 Tsd. km","über 150 Tsd. km"],
+ leistung:["bis 75 PS","75–150 PS","150–250 PS","über 250 PS"],ps:["bis 50 PS","50–100 PS","100–200 PS","über 200 PS"],
+ hubraum:["bis 125 cm³","125–500 cm³","500–1.000 cm³","über 1.000 cm³"],
+ gesamtgewicht:["bis 3,5 t","3,5–7,5 t","7,5–12 t","über 12 t"],laenge:["bis 5 m","5–7 m","7–10 m","über 10 m"],
+ ram:["4 GB","8 GB","16 GB","32 GB","64 GB+"],zoll:["13–15","16","17","18","19","20+"],
+ groesse:["bis 30","31–36","37–40","41–44","45+"],
+ betriebsstunden:["bis 1.000 h","1.000–5.000 h","5.000–10.000 h","über 10.000 h"],
+ gehalt_von:["bis 30.000 €","30–45 Tsd. €","45–60 Tsd. €","60–80 Tsd. €","über 80 Tsd. €"],
+ erfahrung:["keine","1–2 Jahre","3–5 Jahre","über 5 Jahre"],stunden:["bis 15","15–30","30–40","über 40"],
+ alter:["bis 1 Jahr","1–3 Jahre","3–8 Jahre","über 8 Jahre"],sitze:["bis 20","20–40","40–60","über 60"]
+};
+const LBL={kgr:v=>'Gr. '+v,schuhgr:v=>'Gr. '+v,konf:v=>'Gr. '+v,groesse_b:v=>'Gr. '+v,anzahl_t:v=>v+' Ticket'+(v==='1'?'':'s'),erstzulassung:v=>'EZ '+v,baujahr:v=>'Baujahr '+v,zimmer:v=>v+' Zimmer',zimmeranzahl:v=>v+' Zimmer',mitbewohner:v=>v+' Mitbewohner',schlafplaetze:v=>v+' Schlafplätze',kojen:v=>v+' Kojen',betten:v=>v+' Betten',sitze:v=>v+' Sitze',raeume:v=>v+' Räume',zoll:v=>v+' Zoll',groesse:v=>'Größe '+v,stunden:v=>v+' Std./Woche',erfahrung:v=>'Erfahrung: '+v};
+const CITIES=["10115 Berlin-Mitte","10967 Berlin-Kreuzberg","12043 Berlin-Neukölln","13187 Berlin-Pankow","12529 Schönefeld","14467 Potsdam","20095 Hamburg","04109 Leipzig","01067 Dresden","80331 München","50667 Köln","60311 Frankfurt am Main","70173 Stuttgart","28195 Bremen","30159 Hannover"];
+const KMS=["5 km","10 km","25 km","50 km","100 km","Ganz Deutschland"];
+let MODE="browse",MY=[],POSTVAL={},POSTERR={},POSTOK="";
+const SHORT=[
+ ['Elektroauto',['Fahrzeuge','Autos'],{kraftstoff:['Elektro']}],
+ ['Hybrid / Plug-in-Hybrid',['Fahrzeuge','Autos'],{kraftstoff:['Hybrid (Benzin/Elektro)','Hybrid (Diesel/Elektro)','Plug-in-Hybrid']}],
+ ['Oldtimer / Youngtimer',['Fahrzeuge','Autos'],{__extras:['Oldtimer / Youngtimer (H-Kennzeichen)']}],
+ ['Oldtimer-Motorrad',['Fahrzeuge','Motorräder & Motorroller'],{__extras:['Oldtimer / Youngtimer (H-Kennzeichen)']}],
+ ['Unfallwagen / Bastlerfahrzeug',['Fahrzeuge','Autos'],{zustand:['Unfallfahrzeug','Nicht fahrtauglich']}],
+ ['Behindertengerechtes Fahrzeug / Rollstuhl',['Fahrzeuge','Autos'],{__extras:['Behindertengerechter Umbau']}],
+ ['E-Bike',['Fahrzeuge','Fahrräder & E-Bikes','E-Bike / Pedelec'],{}],
+ ['Kapitalanlage / vermietete Wohnung',['Immobilien','Wohnen','Kaufen'],{__extras:['Vermietet (Kapitalanlage)']}],
+ ['Seniorenwohnung',['Immobilien','Wohnen','Wohnen im Alter'],{}],
+ ['Möbliert auf Zeit',['Immobilien','Wohnen','WG-Zimmer & Wohnen auf Zeit'],{}],
+ ['Neubau / Fertighaus',['Immobilien','Wohnen','Neubauprojekte'],{}],
+ ['Hotel / Pension',['Immobilien','Hotels & Tourismus'],{}],
+ ['iPad',['Elektronik','Tablets & E-Reader','Tablets'],{marke:['Apple']}],
+ ['Mac / MacBook',['Elektronik','Computer & Laptops','Laptops / Notebooks'],{marke:['Apple']}],
+ ['Brautkleid',['Mode & Beauty','Damenbekleidung','Abendmode & Brautmode'],{}],
+ ['Kindersitz / Autositz',['Familie, Kind & Baby','Babyausstattung','Autositze'],{}],
+ ['Kinder- & Jugendmöbel',['Familie, Kind & Baby','Kinderzimmer'],{}],
+ ['SUP / Surfbrett',['Freizeit, Hobby & Sport','Sport & Fitness','Wassersport (SUP, Surf, Neopren)'],{}],
+ ['Reitsport',['Tiere','Tierbedarf','Reitbedarf'],{}],
+ ['Food Truck',['Fahrzeuge','Anhänger & Auflieger','Verkaufsanhänger / Food Trailer'],{}],
+ ['Bootstrailer',['Fahrzeuge','Anhänger & Auflieger','Bootsanhänger / Trailer'],{}],
+ ['Rollstuhl / Pflegebett',['Mode & Beauty','Beauty & Gesundheit','Medizinische Hilfsmittel'],{}],
+ ['iPhone',['Elektronik','Handys & Smartphones','Apple'],{}],
+ ['Headset / In-Ear-Kopfhörer',['Elektronik','Audio & HiFi','Kopfhörer'],{}],
+ ['AirPods',['Elektronik','Audio & HiFi','Kopfhörer'],{marke:['Apple']}],
+ ['Smartwatch / Fitnesstracker',['Mode & Beauty','Uhren','Smartwatches & Fitnesstracker'],{}],
+ ['Apple Watch',['Mode & Beauty','Uhren','Smartwatches & Fitnesstracker'],{marke:['Apple']}],
+ ['Drohne',['Fahrzeuge','Flugzeuge & Luftfahrzeuge','Drohnen'],{}],
+ ['Apple Pencil',['Elektronik','Tablets & E-Reader','Tablet-Zubehör'],{marke:['Apple']}],
+ ['Kindle',['Elektronik','Tablets & E-Reader','E-Reader'],{marke:['Amazon']}],
+ ['Grafikkarte / GPU',['Elektronik','PC-Zubehör & Komponenten','Grafikkarten'],{}],
+ ['RAM',['Elektronik','PC-Zubehör & Komponenten','Arbeitsspeicher'],{}],
+ ['PS5',['Elektronik','Konsolen & Videospiele','PlayStation'],{}],
+ ['Switch 2',['Elektronik','Konsolen & Videospiele','Nintendo'],{kmodell:['Switch 2']}],
+ ['Balkonkraftwerk',['Elektronik','Elektronik-Bauteile & Messtechnik','Solartechnik & Powerstations'],{art:['Balkonkraftwerk (Set)']}],
+ ['Thermomix',['Elektronik','Haushaltsgeräte','Küchenkleingeräte'],{marke:['Vorwerk (Thermomix)']}],
+ ['RTX / GeForce / Radeon',['Elektronik','PC-Zubehör & Komponenten','Grafikkarten'],{}],
+ ['DDR5 / DDR4',['Elektronik','PC-Zubehör & Komponenten','Arbeitsspeicher'],{}],
+ ['Fernseher / TV / Smart TV',['Elektronik','TV & Video','Fernseher'],{}],
+ ['Monitor',['Elektronik','PC-Zubehör & Komponenten','Monitore'],{}],
+ ['SSD / Festplatte',['Elektronik','PC-Zubehör & Komponenten','Festplatten & SSDs'],{}],
+ ['Mainboard',['Elektronik','PC-Zubehör & Komponenten','Mainboards'],{}],
+ ['Laptop / Notebook / MacBook',['Elektronik','Computer & Laptops','Laptops / Notebooks'],{}],
+ ['Powerbank',['Elektronik','Handy-Zubehör','Powerbanks'],{}],
+ ['Handyhülle / Panzerglas',['Elektronik','Handy-Zubehör','Hüllen & Schutzfolien'],{}]
+];
+let D,ROOT,IDX=[],TOTAL=0,path=[],sel={},open={},expand={};
+const fmt=n=>Math.round(n).toLocaleString('de-DE');
+const el=(t,c,txt)=>{const e=document.createElement(t);if(c)e.className=c;if(txt!=null)e.textContent=txt;return e;};
+const hash=s=>{let h=7;for(const ch of s)h=(h*31+ch.charCodeAt(0))%1000003;return h;};
+let seed=1;const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280;};
+const pick=a=>a[Math.floor(rnd()*a.length)];
+function build(nodes,parent,inh){return nodes.map(x=>{
+ const i={attrs:x.attrs??inh.attrs,price:x.price??inh.price,priceUnit:x.priceUnit??inh.priceUnit,priceLabel:x.priceLabel??inh.priceLabel,icon:x.icon??inh.icon,top:inh.top??x.name};
+ const nd={n:x.name,p:parent,inh:i,note:x.note,brands:x.brands};nd.c=x.children?build(x.children,nd,i):null;
+ nd.k=nd.c?nd.c.reduce((a,b)=>a+b.k,0):20+hash(x.name+(parent?parent.n:''))%600;return nd;});}
+const byNames=a=>{let x={c:ROOT.c};for(const n of a){x=(x.c||[]).find(y=>y.n===n);if(!x)return null;}return x;};
+function brandsOf(nd){if(!nd||nd===ROOT)return null;if(nd.brands!==undefined)return nd.brands;if(!nd.c)return null;
+ const seen=[],cnt={};let any=false;nd.c.forEach(c=>{const b=brandsOf(c);if(b===null)return;any=true;b.forEach(x=>{if(x==='Andere Marke')return;if(!(x in cnt)){cnt[x]=0;seen.push(x);}cnt[x]++;});});
+ if(!any)return null;seen.sort((a,b)=>cnt[b]-cnt[a]);return seen.length?seen.concat(['Andere Marke']):[];}
+function withBrands(nd,set){const bl=brandsOf(nd);if(bl===null)return set;return set.flatMap(a=>{if(a.key!=='marke')return [a];if(!bl.length)return [];return [Object.assign({},a,{type:'select',options:bl})];});}
+function depOpts(a,vals,nd){if(!a.dep)return a.options||[];let src=vals(a.dep.on);if(!src||!src.length)src=chainOf(nd).map(x=>x.n).filter(n=>a.dep.map[n]);
+ const allow=new Set();let any=false;(src||[]).forEach(v=>{const m=a.dep.map[v]||a.dep.map[String(v).replace(/^\S+\s/,'')];if(m){any=true;m.forEach(x=>allow.add(x));}});
+ return any?(a.options||[]).filter(o=>allow.has(o)):(a.options||[]);}
+function catOpts(a,vals){if(!a.catdep)return null;const src=vals(a.catdep.on);if(!src||src.length!==1)return null;const m=a.catdep.map[src[0]];if(!m)return null;return (D.catalogs[m[0]]||{})[m[1]]||null;}
+const chainOf=nd=>{const a=[];let x=nd;while(x){a.unshift(x);x=x.p;}return a;};
+const cur=()=>path.length?path[path.length-1]:ROOT;
+function go(nd){const kl=document.getElementById('kiline');if(kl)kl.className='kiline';POSTVAL={};POSTERR={};path=nd===ROOT?[]:chainOf(nd);sel={};open={};expand={};render();window.scrollTo({top:0});}
+const ZUSTAND_ZUERST=new Set(["teile","waren","marke_waren","verschenken","material","einrichtung"]);
+function filters(nd){
+ if(nd===ROOT)return [];
+ let set=withBrands(nd,(D.sets[nd.inh.attrs]||[]).filter(a=>a.filter));
+ /* Reihenfolge: 1. Sache finden, 2. Details/Ausstattung, 3. Preis, 4. Übergabe, 5. Ort */
+ if(ZUSTAND_ZUERST.has(nd.inh.attrs)){const z=set.filter(a=>a.key==="zustand");set=z.concat(set.filter(a=>a.key!=="zustand"));}
+ const versand=set.find(a=>a.key==="versand");set=set.filter(a=>a.key!=="versand");
+ const F=[],bool=[];
+ const catNames=new Set();chainOf(nd).forEach(x=>(x.c||[]).forEach(c=>catNames.add(c.n)));
+ const dup=a=>(a.options||[]).filter(o=>catNames.has(o)).length>=2;
+ set.forEach(a=>{
+  if((a.type==="select"||a.type==="multiselect")&&dup(a))return;
+  if(a.type==="boolean")bool.push(a.label);
+  else if(a.type==="select"||a.type==="multiselect"){const o=depOpts(a,k=>sel[k],nd);if(a.dep&&sel[a.key]){sel[a.key]=sel[a.key].filter(v=>o.includes(v));if(!sel[a.key].length)delete sel[a.key];}F.push({key:a.key,label:a.label,kind:"opts",opts:o,all:a.type==="multiselect",catalog:a.catalog,dep:a.dep&&a.dep.on});}
+  else if(a.type==="model"){const pa=set.find(b=>b.key===a.parent);const ctx=pa&&(pa.options||[]).filter(o=>chainOf(nd).some(x=>x.n===o));F.push({key:a.key,label:a.label,kind:"model",catalog:a.catalog,parent:a.parent,ctx:ctx&&ctx.length?ctx:null});}
+  else if(a.type==="number")F.push(BUCKETS[a.key]?{key:a.key,label:a.label,kind:"opts",opts:BUCKETS[a.key],free:true,unit:a.unit}:{key:a.key,label:a.label+(a.unit?" ("+a.unit+")":""),kind:"range"});
+  else if(a.type==="text"){const co=catOpts(a,k=>sel[k]);if(co&&co.length){if(sel[a.key])sel[a.key]=sel[a.key].filter(v=>co.includes(v));if(sel[a.key]&&!sel[a.key].length)delete sel[a.key];F.push({key:a.key,label:a.label,kind:"opts",opts:co});}else{if(a.catdep&&sel[a.key]&&!catOpts(a,k=>sel[k])){} F.push({key:a.key,label:a.label,kind:"text"});}}
+ });
+ if(bool.length)F.push({key:"__extras",label:"Ausstattung und Merkmale",kind:"opts",opts:bool,all:true});
+ if(nd.inh.price!=="none"&&nd.inh.price!=="free")F.push({key:"__preis",label:(nd.inh.priceLabel||"Preis")+(nd.inh.priceUnit?" "+nd.inh.priceUnit:""),kind:"range",unit:"€",tail:true});
+ if(versand)F.push({key:"versand",label:versand.label,kind:"opts",opts:versand.options||[],tail:true});
+ if(!chainOf(nd).some(x=>x.n==="Immobilien Ausland"))F.push({key:"__ort",label:"Ort und Umkreis",kind:"ort",tail:true});
+ return F;}
+function toggle(f,v){const s=sel[f.key]=sel[f.key]||[];const i=s.indexOf(v);i>=0?s.splice(i,1):s.push(v);if(!s.length)delete sel[f.key];
+ if(f.catalog&&f.key==="marke")delete sel.modell;open[f.key]=true;render();}
+function optButtons(f,opts,w){
+ const MAX=10,many=opts.length>MAX&&!expand[f.key];
+ if(opts.length>14){const q=el('input');q.type='text';q.placeholder=f.label+' suchen';q.style.marginBottom='8px';q.value=expand['q'+f.key]||'';
+  q.oninput=()=>{expand['q'+f.key]=q.value;expand[f.key]=true;open[f.key]=true;render();const n=document.getElementById('q-'+f.key);if(n){n.focus();n.setSelectionRange(n.value.length,n.value.length);}};q.id='q-'+f.key;w.appendChild(q);}
+ const qq=(expand['q'+f.key]||'').toLowerCase();
+ let list=qq?opts.filter(o=>o.toLowerCase().includes(qq)):opts;
+ const s=sel[f.key]||[];
+ if(many&&!qq)list=Array.from(new Set(s.concat(list.slice(0,MAX))));
+ list.forEach(v=>{const b=el('button','p'+(s.includes(v)?' on':''),v);b.onclick=()=>toggle(f,v);w.appendChild(b);});
+ if(opts.length>MAX&&!qq){const m=el('button','more',expand[f.key]?'Weniger anzeigen':'Alle '+opts.length+' anzeigen');m.onclick=()=>{expand[f.key]=!expand[f.key];open[f.key]=true;render();};w.appendChild(el('br'));w.appendChild(m);}
+}
+function render(){
+ const nd=cur(),ch=[ROOT].concat(path);
+ const cr=document.getElementById('crumbs');cr.innerHTML='';
+ ch.forEach((m,i)=>{if(i)cr.appendChild(document.createTextNode(' › '));const s=el('span',i<ch.length-1?'crumb':'',m.n);if(i<ch.length-1)s.onclick=()=>go(m);cr.appendChild(s);});
+ const b=document.getElementById('back');b.innerHTML='';
+ if(path.length){const d=el('div','it back','‹ zurück');d.onclick=()=>go(nd.p||ROOT);b.appendChild(d);}
+ document.getElementById('title').textContent=nd.n;
+ const l=document.getElementById('list');l.innerHTML='';
+ (nd.c||[]).forEach(c=>{const d=el('div','it');if(nd===ROOT)d.appendChild(el('span','ic',c.inh.icon||''));d.appendChild(el('span','',c.n));d.appendChild(el('span','n',fmt(c.k)));if(c.c)d.appendChild(el('span','ar','›'));d.onclick=()=>go(c);l.appendChild(d);});
+ const pr=document.getElementById('props');pr.innerHTML='';
+ document.getElementById('postview').hidden=MODE!=='post';document.getElementById('browse').hidden=MODE==='post';
+ document.getElementById('postbtn').classList.toggle('on',MODE==='post');
+ if(MODE==='post'){document.getElementById('title').textContent=nd===ROOT?'Kategorie wählen':nd.n;postForm(nd);return;}
+ const F=filters(nd);
+ if(F.length){pr.appendChild(el('div','sep'));pr.appendChild(el('div','ph-h','Eigenschaften'));
+  F.forEach((f,fi)=>{
+   if(f.kind==="model"&&!(sel[f.parent]||[]).length&&!f.ctx)return;
+   const det=el('details');if(open[f.key]||sel[f.key]||(fi<4&&!f.tail))det.open=true;det.addEventListener('toggle',()=>{open[f.key]=det.open;});
+   const sm=el('summary');sm.appendChild(el('span','',f.label));if(sel[f.key])sm.appendChild(el('span','st',f.kind==="ort"?(sel.__km?sel.__km[0]:'gesetzt'):f.kind==="opts"||f.kind==="model"?sel[f.key].length+' gewählt':'gesetzt'));else if(sel[f.key+'__r'])sm.appendChild(el('span','st','eigene Angabe'));det.appendChild(sm);
+   const w=el('div','props');
+   if(f.kind==="opts"){if(f.all)w.appendChild(el('div','hint','Alles Gewählte muss vorhanden sein'));optButtons(f,f.opts,w);if(f.free){w.appendChild(el('div','hint','Oder selbst eintragen'+(f.unit?' ('+f.unit+')':'')+':'));const r=el('div','rng');const rk=f.key+'__r';const v=sel[rk]||['',''];['von','bis'].forEach((ph,i)=>{const inp=el('input');inp.type='number';inp.inputMode='numeric';inp.placeholder=ph;inp.value=v[i]||'';inp.setAttribute('aria-label',f.label+' '+ph);inp.onchange=()=>{const nv=(sel[rk]||['','']).slice();nv[i]=inp.value;if(nv[0]||nv[1])sel[rk]=nv;else delete sel[rk];open[f.key]=true;render();};if(i)r.appendChild(el('span','','–'));r.appendChild(inp);});w.appendChild(r);}}
+   else if(f.kind==="model"){const brands=sel[f.parent]||f.ctx;const opts=[];brands.forEach(br=>(D.catalogs[f.catalog]?.[br]||[]).forEach(m=>opts.push(brands.length>1?br+' '+m:m)));if(!opts.length)w.appendChild(el('div','hint','Keine Modellliste für diese Marke'));optButtons(f,opts,w);}
+   else if(f.kind==="range"){const r=el('div','rng');const v=sel[f.key]||['',''];['von','bis'].forEach((ph,i)=>{const inp=el('input');inp.type='number';inp.placeholder=ph;inp.value=v[i]||'';inp.onchange=()=>{const nv=(sel[f.key]||['','']).slice();nv[i]=inp.value;if(nv[0]||nv[1])sel[f.key]=nv;else delete sel[f.key];open[f.key]=true;render();};if(i)r.appendChild(el('span','','–'));r.appendChild(inp);});w.appendChild(r);}
+   else if(f.kind==="ort"){const inp=el('input');inp.type='text';inp.placeholder='PLZ oder Ort, z. B. 12529 oder Schönefeld';inp.setAttribute('aria-label','PLZ oder Ort');inp.value=(sel.__ort||[''])[0];inp.onchange=()=>{if(inp.value.trim())sel.__ort=[inp.value.trim()];else{delete sel.__ort;delete sel.__km;}open.__ort=true;render();};w.appendChild(inp);const r=el('div','kmrow');r.appendChild(el('div','hint','Umkreis'));KMS.forEach(v=>{const b=el('button','p'+((sel.__km||[])[0]===v?' on':''),v);b.onclick=()=>{if((sel.__km||[])[0]===v)delete sel.__km;else sel.__km=[v];open.__ort=true;render();};r.appendChild(b);});w.appendChild(r);}
+   else if(f.kind==="text"){const inp=el('input');inp.type='text';inp.placeholder=f.label;inp.value=(sel[f.key]||[''])[0];inp.onchange=()=>{if(inp.value.trim())sel[f.key]=[inp.value.trim()];else delete sel[f.key];open[f.key]=true;render();};w.appendChild(inp);}
+   det.appendChild(w);pr.appendChild(det);});}
+ /* Anzahl grob schätzen */
+ let k=nd.k;F.forEach(f=>{if(sel[f.key+'__r'])k*=.5;const s=sel[f.key];if(!s)return;if(f.kind==="ort")k*=sel.__km&&sel.__km[0]==='Ganz Deutschland'?1:.35;else if(f.kind==="opts"||f.kind==="model")k*=f.all?Math.pow(.55,s.length):Math.min(1,s.length/Math.max(f.opts?f.opts.length:6,1)*1.6);else k*=.5;});k=Math.round(k);
+ k+=MY.filter(a=>chainOf(a.node).includes(nd)&&matchMine(a,F)).length;
+ document.getElementById('head').textContent=fmt(k)+' Anzeigen in '+nd.n;
+ {const cn=document.getElementById('catnote');let x=nd,nt=null;while(x&&!nt){nt=x.note;x=x.p;}cn.textContent=nt||'';cn.className='catnote'+(nt?' on':'');}
+ const cp=document.getElementById('chips');cp.innerHTML='';
+ F.forEach(f=>{const r=sel[f.key+'__r'];if(r){const c=el('button','chip',f.label+': '+(r[0]?'von '+r[0]:'')+(r[0]&&r[1]?' ':'')+(r[1]?'bis '+r[1]:'')+(f.unit?' '+f.unit:'')+' ✕');c.onclick=()=>{delete sel[f.key+'__r'];render();};cp.appendChild(c);}const s=sel[f.key];if(!s)return;let txt;if(f.kind==="ort")txt='Ort: '+s[0]+(sel.__km?' · '+sel.__km[0]:'');else if(f.kind==="range")txt=f.label+': '+(s[0]?'von '+s[0]:'')+(s[0]&&s[1]?' ':'')+(s[1]?'bis '+s[1]:'');else txt=f.label+': '+s.join(f.all?' und ':' oder ');
+  const c=el('button','chip',txt+' ✕');c.onclick=()=>{delete sel[f.key];if(f.key==="marke")delete sel.modell;if(f.key==="__ort")delete sel.__km;render();};cp.appendChild(c);});
+ if(Object.keys(sel).length){const x=el('button','chip x','Alle Eigenschaften löschen');x.onclick=()=>{sel={};render();};cp.appendChild(x);}
+ cards(nd,F,k);
+}
+function priceFor(nd){const u=nd.inh.priceUnit||'',t=nd.inh.top,lbl=(nd.inh.priceLabel||'').toLowerCase();
+ if(nd.inh.price==="free")return 'Zu verschenken';if(nd.inh.price==="none")return '';
+ let lo=5,hi=600;if(lbl.includes('kostenbeteiligung'))return fmt(5+Math.round(rnd()*35))+' € pro Person';
+ if(u.includes('Nacht')){lo=40;hi=260;}else if(u.includes('Std')){lo=15;hi=60;}else if(u.includes('Monat')){lo=t==='Immobilien'?350:20;hi=t==='Immobilien'?2600:300;}
+ else if(t==='Immobilien'){lo=60000;hi=950000;}else if(t==='Fahrzeuge'){lo=1500;hi=55000;}else if(t==='Maschinen & Industrie'){lo=800;hi=90000;}else if(t==='Jobs & Stellenangebote'){return '';}
+ const step=hi>20000?500:hi>2000?50:hi>200?5:1;return fmt(Math.round((lo+rnd()*(hi-lo))/step)*step)+' €'+(u?' '+u:'');}
+function cards(nd,F,k){
+ const g=document.getElementById('grid');g.innerHTML='';
+ const mine=MY.filter(a=>chainOf(a.node).includes(nd)&&matchMine(a,F));
+ mine.forEach(a=>{const d=el('div','card mine');const ph=el('div','ph',a.fotos.length?'':(a.node.inh.icon||'Bild'));if(a.fotos.length){const im=el('img');im.src=a.fotos[0];im.alt='Foto: '+a.title;ph.appendChild(im);}d.appendChild(ph);
+  const cb=el('div','cb');cb.appendChild(el('span','badge','Neu · deine Anzeige'));if(a.priceTxt)cb.appendChild(el('div','pr',a.priceTxt));cb.appendChild(el('div','ct',a.title));
+  cb.appendChild(el('div','meta',a.meta.concat([a.ort]).filter(Boolean).join(' · ')));if(a.bools.length){const t=el('div','tags');a.bools.forEach(v=>t.appendChild(el('span','tag',v)));cb.appendChild(t);}
+  if(a.node!==nd)cb.appendChild(el('div','meta',chainOf(a.node).slice(nd===ROOT?0:chainOf(nd).length,-1).map(x=>x.n).join(' › ')));cb.appendChild(el('div','meta','gerade eben'));d.appendChild(cb);g.appendChild(d);});
+ const leaves=[];(function w(x){if(!x.c){leaves.push(x);return;}x.c.forEach(w);})(nd);
+ seed=hash(chainOf(nd).map(x=>x.n).join('/'))%233280;
+ const n=Math.max(0,Math.min(9,k)-mine.length);
+ for(let i=0;i<n;i++){
+  const lf=leaves[Math.floor(rnd()*leaves.length)],LF=filters(lf);
+  const val=f=>{const s=sel[f.key];if(f.kind==="opts")return s&&!f.all?s[i%s.length]:pick(f.opts);return null;};
+  let title=lf.n,meta=[],tags=[];
+  const fmA=withBrands(lf,D.sets[lf.inh.attrs]||[]).find(a=>a.key==='marke'&&a.options),fm=fmA&&{opts:fmA.options,catalog:fmA.catalog};
+  if(fm){const br=(sel.marke&&sel.marke[i%sel.marke.length])||(chainOf(lf).map(x=>x.n).find(n=>fm.opts.includes(n))||null)||pick(fm.opts.filter(o=>o!=='Andere Marke'));const ms=D.catalogs[fm.catalog]?.[br]||[];let mo=sel.modell?sel.modell[i%sel.modell.length]:sel.modell_txt?sel.modell_txt[0]:(ms.length?pick(ms):'');if(sel.modell&&sel.marke&&sel.marke.length>1)mo=mo.replace(br+' ','');title=(br+' '+(mo||'')).trim()+(lf.n===br?'':' · '+lf.n);}
+  [...LF].sort((a,b)=>(sel[b.key]?1:0)-(sel[a.key]?1:0)).forEach(f=>{if(f.key==='marke'||f.key==='__ort'||f.key==='__preis')return;
+   if(f.key==='__extras'){const must=sel[f.key]||[];tags=must.concat(f.opts.filter(o=>!must.includes(o)&&rnd()<.18).slice(0,3));return;}
+   if(f.kind==="opts"&&meta.length<3&&!/typ|^art$|kategorie|karosserie|aufbau/i.test(f.key)){const v=val(f);if(v&&!/^(Andere|Sonstige)/.test(v))meta.push(LBL[f.key]?LBL[f.key](v):(BUCKETS[f.key]&&!/[a-zA-Z²³]/.test(v)?f.label+' '+v:v));}});
+  meta.push(chainOf(lf).some(x=>x.n==='Immobilien Ausland')?lf.n:(sel.__ort?sel.__ort[0]+' · '+(1+Math.floor(rnd()*(sel.__km&&sel.__km[0]!=='Ganz Deutschland'?parseInt(sel.__km[0]):30)))+' km':pick(CITIES)));
+  const d=el('div','card');d.appendChild(el('div','ph',nd===ROOT?lf.inh.icon:(lf.inh.icon||'')));
+  const cb=el('div','cb');const p=priceFor(lf);if(p)cb.appendChild(el('div','pr',p));
+  cb.appendChild(el('div','ct',title));cb.appendChild(el('div','meta',meta.join(' · ')));
+  if(tags.length){const t=el('div','tags');tags.forEach(v=>t.appendChild(el('span','tag',v)));cb.appendChild(t);}
+  if(nd!==lf)cb.appendChild(el('div','meta',chainOf(lf).slice(nd===ROOT?0:chainOf(nd).length,-1).map(x=>x.n).join(' › ')));
+  cb.appendChild(el('div','meta','vor '+(i+1)+' Std.'));d.appendChild(cb);g.appendChild(d);}
+ if(!n)g.appendChild(el('p','meta','Keine Anzeigen mit diesen Eigenschaften. Entferne oben eine Auswahl.'));
+}
+const s=document.getElementById('s'),h=document.getElementById('hits');
+s.addEventListener('input',()=>{const q=s.value.trim().toLowerCase();h.className='';h.innerHTML='';if(q.length<2)return;h.className='hits';
+ const kh=el('div','hit ki');kh.appendChild(el('b','','✦ Mit KI suchen: „'+s.value.trim()+'“'));kh.appendChild(el('span','n','Enter'));kh.onclick=()=>{h.className='';h.innerHTML='';kiSearch(s.value.trim());};h.appendChild(kh);
+ SHORT.filter(x=>x[0].toLowerCase().includes(q)).forEach(x=>{const nd=byNames(x[1]);if(!nd)return;const d=el('div','hit');const pre=Object.entries(x[2]).map(([k,v])=>v.join(' oder ')).join(', ');d.appendChild(el('span','meta',x[1].join(' › ')+(pre?' · ':'')+pre));d.appendChild(el('b','',x[0]));d.onclick=()=>{s.value='';h.className='';h.innerHTML='';go(nd);sel=JSON.parse(JSON.stringify(x[2]));Object.keys(sel).forEach(k=>open[k]=true);render();};h.appendChild(d);});
+ const m=IDX.filter(x=>x.n.toLowerCase().includes(q)).sort((a,b)=>(a.n.toLowerCase().startsWith(q)?0:1)-(b.n.toLowerCase().startsWith(q)?0:1)).slice(0,12);
+ 
+ m.forEach(x=>{const d=el('div','hit');const c=chainOf(x);d.appendChild(el('span','meta',c.slice(0,-1).map(y=>y.n).join(' › ')+(c.length>1?' ›':'')));d.appendChild(el('b','',x.n));d.appendChild(el('span','n',fmt(x.k)));d.onclick=()=>{s.value='';h.className='';h.innerHTML='';go(x);};h.appendChild(d);});});
+
+/* KI-Suche (Vorschau): im Entwurf wertet ein einfaches Regelwerk im Browser den Satz aus.
+   Auf der echten Seite übernimmt das ein Modell von Cloudflare Workers AI mit demselben Ergebnis-Format. */
+const kil=document.getElementById('kiline');
+const esc=x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+const has=(q,w)=>w.length>=2&&new RegExp('(^|[^a-zäöüß0-9])'+esc(w.toLowerCase())+(w.length>=5?'':'(e|en|er|es|n)?([^a-zäöüß0-9]|$)')).test(q);
+const brandHit=(q,b)=>{if(!b||b==='Andere Marke'||/^(Ohne|Antik|Selbst|Handgefertigt|Meisterwerkstatt)/.test(b))return false;if(has(q,b))return true;const m=b.match(/^(.*?)\s*\((.*)\)$/);if(m)return has(q,m[1])||has(q,m[2]);const f=b.split(/ & | \/ /)[0].trim();return f.length>=4&&f!==b&&has(q,f);};
+function kiSearch(raw){
+ const q=raw.toLowerCase().replace(/(\d{2})\s*(zoll|")/g,'$1"');let best=null,bs=0;
+ const words=n=>n.toLowerCase().split(/[^a-zäöüß0-9-]+/).filter(w=>w.length>=4);
+ IDX.forEach(x=>{let sc=0;const nm=x.n.toLowerCase();if(q.includes(nm))sc=nm.length*2+chainOf(x).length;else words(x.n).forEach(w=>{if(q.includes(w.replace(/e?n$/,'')))sc+=w.length;});if(sc>bs){bs=sc;best=x;}});
+ {const cand=[];const wds=n=>n.toLowerCase().split(/[^a-zäöüß0-9]+/).filter(w=>w.length>=4);
+  IDX.forEach(x=>{if(!x.brands)return;const br=x.brands.find(b=>brandHit(q,b));if(br){let sc=0;wds(x.n).forEach(w=>{if(q.includes(w.replace(/e?n$/,'')))sc+=w.length;});cand.push({x,br,sc});}});
+  cand.sort((a,b)=>b.sc-a.sc||b.br.length-a.br.length);
+  if(cand.length&&cand[0].sc>0&&cand[0].sc+40>bs){best=cand[0].x;bs=cand[0].sc+40;var brPreset={marke:[cand[0].br]};}
+  else if(cand.length&&(!best||bs<6)){const top=cand[0].br,same=cand.filter(c=>c.br===top);
+   if(same.length===1&&top.length>=5){best=same[0].x;bs=99;var brPreset={marke:[top]};}
+   else if(same.length>1&&new Set(same.map(c=>c.x.p)).size===1){best=same[0].x.p;bs=99;var brPreset={marke:[top]};}}}
+ let preset=typeof brPreset!=='undefined'?brPreset:{};SHORT.forEach(x=>{x[0].toLowerCase().split(' / ').forEach(nm=>{const sc=100+nm.length;if(has(q,nm)&&sc>bs){const nd=byNames(x[1]);if(nd){best=nd;bs=sc;preset=JSON.parse(JSON.stringify(x[2]));}}});});
+ if(!best||bs<6){const PRI=['uhren','taschen','schmuck','schuhe_herren','kleidung_herren','handy','tablet','computer','pkw','motorrad','roller','quad','fahrrad','escooter','baby','spielzeug','instrument','sport'];
+  for(const k of PRI){const set=D.sets[k]||[];const mk=set.find(a=>a.key==='marke'&&a.options);if(!mk)continue;const br=mk.options.find(o=>o!=='Andere Marke'&&has(q,o));
+   if(br){const nd=IDX.find(x=>x.inh.attrs===k&&(!x.p||x.p.inh.attrs!==k));if(nd){const bl=brandsOf(nd);let tgt=nd;if(bl&&!bl.includes(br)){const leaf=IDX.find(x=>(x.brands||[]).includes(br));if(leaf)tgt=leaf.p||leaf;}best=tgt;bs=99;preset={marke:[br]};break;}}}
+  if(!best){const leaf=IDX.find(x=>(x.brands||[]).some(b=>b!=='Andere Marke'&&has(q,b.replace(/ \(.*\)$/,''))));if(leaf){const br=leaf.brands.find(b=>b!=='Andere Marke'&&has(q,b.replace(/ \(.*\)$/,'')));best=leaf.p||leaf;bs=99;preset={marke:[br]};}}}
+ if(!best){kil.className='kiline on';kil.textContent='KI-Vorschau: Keine passende Kategorie erkannt. Versuch es mit einem Begriff wie „Kombi“, „Wohnung“ oder „iPhone“.';return;}
+ go(best);sel=preset;if(sel.marke)open.marke=true;
+ filters(best).forEach(f=>{
+  if(f.kind==='opts'||f.kind==='model'){let opts=f.opts;if(f.kind==='model'){const br=sel[f.parent]||f.ctx||[];opts=[];br.forEach(b=>(D.catalogs[f.catalog]?.[b]||[]).forEach(m=>opts.push(m)));}
+   const SINGLE=f.kind==='model'||['kmodell','gpu','cpu','serie'].includes(f.key);
+   if(SINGLE){const IGN=new Set(['gen','generation','oder','älter','ältere','älteres','älterer','erste','version','mit','und','pro/max']);const toks=o=>o.toLowerCase().replace(/[()",\/]/g,' ').split(/\s+/).filter(t=>t&&!IGN.has(t));
+    let bestSc=0,hits=[];(opts||[]).forEach(o=>{const tk=toks(o);const hitT=tk.filter(t=>has(q,t)||(t.length>=2&&q.split(/\s+/).includes(t)));if(!hitT.some(t=>/\d/.test(t))&&hitT.length<tk.length)return;const sc=hitT.length*10-(tk.length-hitT.length);if(sc>bestSc){bestSc=sc;hits=[o];}else if(sc===bestSc)hits.push(o);});
+    if(hits.length&&hits.length<=4){sel[f.key]=hits;open[f.key]=true;}return;}
+   const hit=f.key==='marke'?(opts||[]).filter(o=>brandHit(q,o)):(opts||[]).filter(o=>o.split(/ \/ | oder /).some(part=>{const p0=part.replace(/ \(.*\)$/,'');return has(q,p0)||(/^(GeForce|Radeon|Intel Arc) /.test(p0)&&has(q,p0.replace(/^(GeForce|Radeon|Intel) /,'')));}));
+   if(f.key==='zimmer'||f.key==='zimmeranzahl'){const m=q.match(/(\d+)\s*(-|–)?\s*zi/);if(m){const v=+m[1]>=5?'5+':m[1];if(opts.includes(v))hit.push(v);}}
+   const bse=o=>o.replace(/ \(.*\)$/,'').toLowerCase();for(let i=hit.length-1;i>=0;i--)if(hit.some(o=>o!==hit[i]&&(o.toLowerCase().includes(hit[i].toLowerCase())||(bse(o).includes(bse(hit[i]))&&bse(o)!==bse(hit[i])))))hit.splice(i,1);
+   if(hit.length){sel[f.key]=Array.from(new Set((sel[f.key]||[]).concat(hit)));open[f.key]=true;}}
+  if(f.kind==='text'&&/marke|hersteller/.test(f.key)){const all=new Set();Object.values(D.catalogs).forEach(c=>Object.keys(c).forEach(b=>all.add(b)));['Volkswagen','VW','Opel','Ford','Mercedes','Bosch','Liebherr','Caterpillar','John Deere','Fendt','Claas'].forEach(b=>all.add(b));const b=[...all].find(b=>b!=='Andere Marke'&&has(q,b));if(b){sel[f.key]=[b];open[f.key]=true;}}
+  if(f.key==='zoll'){const m=q.match(/\br ?(\d{2})\b/);if(m){const v=(f.opts||[]).find(o=>o===m[1]||(o.includes('–')&&+m[1]>=+o.split('–')[0]&&+m[1]<=+o.split('–')[1])||(o.endsWith('+')&&+m[1]>=parseInt(o)));if(v){sel.zoll=[v];open.zoll=true;}}}
+  if(f.key==='breite'||f.key==='querschnitt'){const m=q.match(/\b(1\d{2}|2\d{2}|3\d{2})\s*[\/ ]\s*(\d{2})\b/);if(m){const v=f.key==='breite'?m[1]:m[2];sel[f.key]=[v,v];open[f.key]=true;}}
+ });
+ {const plz=raw.match(/\b\d{5}\b/);const im=raw.match(/\b(?:in|bei|nahe|um)\s+([A-ZÄÖÜ][\wäöüß-]+(?:\s+[A-ZÄÖÜ][\wäöüß-]+)?)/);const loc=plz?plz[0]:(im?im[1]:null);
+  if(loc&&filters(best).some(f=>f.key==='__ort')){sel.__ort=[loc];const km=q.match(/(\d+)\s*km/);if(km){const v=KMS.find(x=>parseInt(x)>=+km[1])||'100 km';sel.__km=[v];}open.__ort=true;}}
+ if(sel.marke&&sel.marke.length===1&&filters(best).some(f=>f.key==='modell_txt')){const br=sel.marke[0];const ix=raw.toLowerCase().indexOf(br.toLowerCase());
+  if(ix>=0){const STOP=new Set(['in','bei','bis','für','ab','unter','max','maximal','größe','gr','gr.','neu','neue','neuer','gebraucht','gebrauchte','damen','herren','kinder','schuhe','sneaker','jacke','hose','mit','ohne','und','oder','€','euro','eur','um','nahe','original']);chainOf(best).forEach(c=>c.n.toLowerCase().split(/[^a-zäöüß0-9]+/).forEach(w=>{if(w.length>=4){STOP.add(w);STOP.add(w.replace(/e?n$/,''));}}));const out=[];
+   for(const tk of raw.slice(ix+br.length).trim().split(/\s+/)){const t=tk.toLowerCase().replace(/[,.;:!?]+$/,'');if(!t||STOP.has(t)||/^\d{1,2}$/.test(t)||/^\d{5}$/.test(t)||/€/.test(t))break;out.push(tk.replace(/[,.;:!?]+$/,''));if(out.length>=3)break;}
+   if(out.length){sel.modell_txt=[out.join(' ')];open.modell_txt=true;}}}
+ const num=x=>x.replace(/\./g,'').replace(',','.');
+ const pm=q.match(/(?:bis|max\.|maximal|unter|höchstens)\s*([\d.,]+)\s*(?:tsd|tausend|k)?(?!\s*(?:gb|tb|mb|zoll|"|kg|km|w\b|mah|hz|cm|m²|zimmer))/);const pa=q.match(/(?:ab|mindestens|über)\s*([\d.,]+)\s*(?:€|euro|eur)/);
+ if(pm||pa){let hi=pm?num(pm[1]):'',lo=pa?num(pa[1]):'';if(pm&&/(tsd|tausend|\dk)/.test(pm[0]))hi=String(+hi*1000);sel.__preis=[lo,hi];}
+ render();
+ const parts=[best.n].concat(Object.entries(sel).map(([k,v])=>{const f=filters(best).find(x=>x.key===k);if(k==='__km')return null;return (f?(k==='__ort'?'Ort':f.label):k)+': '+(k==='__ort'?v[0]+(sel.__km?' · '+sel.__km[0]:''):k==='__preis'?(v[0]?'von '+v[0]+' ':'')+(v[1]?'bis '+v[1]:''):(v.length===2&&v[0]===v[1]?v[0]:v.join(', ')));}));
+ kil.className='kiline on';kil.textContent='✦ KI hat verstanden: '+parts.filter(Boolean).join(' · ')+' — alles lässt sich links ändern oder oben entfernen.';
+}
+s.addEventListener('keydown',e=>{if(e.key==='Enter'&&s.value.trim()){e.preventDefault();h.className='';h.innerHTML='';kiSearch(s.value.trim());}});
+document.addEventListener('click',e=>{if(!e.target.closest('.sbox')){h.className='';h.innerHTML='';}});
+
+function matchMine(a,F){
+ return F.every(f=>{const s=sel[f.key];
+  if(f.key==='__preis'){if(!s)return true;if(a.price==null)return false;return (!s[0]||a.price>=+s[0])&&(!s[1]||a.price<=+s[1]);}
+  if(f.key==='__ort'){return !s||a.ort.toLowerCase().includes(s[0].toLowerCase());}
+  if(f.key==='__extras'){return !s||s.every(x=>a.bools.includes(x));}
+  if(!s||f.free)return true;
+  if(f.kind==='opts'||f.kind==='model'){const v=a.vals[f.key];if(v==null)return false;return [].concat(v).some(x=>s.includes(x)||s.some(y=>y.endsWith(' '+x)));}
+  if(f.kind==='text'){const v=a.vals[f.key];return v!=null&&String(v).toLowerCase().includes(s[0].toLowerCase());}
+  return true;});}
+function postFields(nd){
+ let set=withBrands(nd,(D.sets[nd.inh.attrs]||[]).slice());
+ if(ZUSTAND_ZUERST.has(nd.inh.attrs)){const z=set.filter(a=>a.key==="zustand");set=z.concat(set.filter(a=>a.key!=="zustand"));}
+ const catNames=new Set();chainOf(nd).forEach(x=>(x.p?x.p.c:ROOT.c).forEach(c=>catNames.add(c.n)));
+ const versand=set.find(a=>a.key==='versand');
+ set=set.filter(a=>a.key!=='versand'&&!((a.type==='select'||a.type==='multiselect')&&(a.options||[]).filter(o=>catNames.has(o)).length>=2));
+ return {set,versand};}
+function postForm(nd){
+ const v=document.getElementById('postview');v.innerHTML='';
+ v.appendChild(el('h2','','Anzeige aufgeben'));
+ if(nd===ROOT||nd.c){
+  v.appendChild(el('p','sub','Schritt 1 von 2: Wähle links die passende Kategorie – bis zur letzten Ebene. Du kannst sie auch oben suchen.'));
+  if(nd!==ROOT){const f=el('div','fsec');f.appendChild(el('h3','','Gewählt bis jetzt: '+chainOf(nd).map(x=>x.n).join(' › ')));const w=el('div');nd.c.forEach(c=>{const b=el('button','p',c.n+(c.c?' ›':''));b.onclick=()=>go(c);w.appendChild(b);});f.appendChild(w);v.appendChild(f);}
+  return;}
+ v.appendChild(el('p','sub','Schritt 2 von 2: '+chainOf(nd).map(x=>x.n).join(' › ')+'. Felder mit * sind Pflicht. Es sind genau die Eigenschaften, nach denen Käufer später filtern.'));
+ const {set,versand}=postFields(nd);
+ const fld=(key,label,req,build,hint)=>{const d=el('div','fld');const l=el('label');l.htmlFor='pf-'+key;l.textContent=label;if(req){const r=el('span','req',' *');l.appendChild(r);}d.appendChild(l);d.appendChild(build());if(hint)d.appendChild(el('div','hint',hint));if(POSTERR[key])d.appendChild(el('div','err',POSTERR[key]));return d;};
+ const inp=(key,type,ph)=>()=>{const i=el('input');i.type=type;i.id='pf-'+key;if(ph)i.placeholder=ph;i.value=POSTVAL[key]??'';i.oninput=()=>{POSTVAL[key]=i.value;};return i;};
+ const selb=(key,opts,rerender)=>()=>{const sl=el('select');sl.id='pf-'+key;sl.appendChild(el('option','','Bitte wählen'));sl.firstChild.value='';opts.forEach(o=>{const op=el('option','',o);op.value=o;if(POSTVAL[key]===o)op.selected=true;sl.appendChild(op);});sl.onchange=()=>{POSTVAL[key]=sl.value;if(rerender)postForm(nd);};return sl;};
+ const sec=t=>{const f=el('div','fsec');f.appendChild(el('h3','',t));v.appendChild(f);return f;};
+ // A
+ const a=sec('Was bietest du an?');
+ a.appendChild(fld('__titel','Titel',true,inp('__titel','text','z. B. '+(nd.n.length<40?nd.n:'kurze Beschreibung')+' in gutem Zustand')));
+ a.appendChild(el('div','',''));
+ a.appendChild(fld('__text','Beschreibung',true,()=>{const t=el('textarea');t.id='pf-__text';t.value=POSTVAL.__text||'';t.placeholder='Was ist es, wie alt, Besonderheiten, Mängel …';t.oninput=()=>{POSTVAL.__text=t.value;};return t;}));
+ a.appendChild(fld('__fotos','Fotos',false,()=>{const w=el('div');const i=el('input');i.type='file';i.id='pf-__fotos';i.accept='image/*';i.multiple=true;const th=el('div','thumbs');const show=()=>{th.innerHTML='';(POSTVAL.__fotos||[]).forEach(u=>{const im=el('img');im.src=u;im.alt='Vorschau';th.appendChild(im);});};i.onchange=()=>{POSTVAL.__fotos=(POSTVAL.__fotos||[]).concat([...i.files].slice(0,10).map(f=>URL.createObjectURL(f)));show();};w.appendChild(i);w.appendChild(th);show();return w;},'Bis zu 10 Bilder. Das erste Bild ist das Titelbild.'));
+ // B
+ const srcKeys=new Set();set.forEach(a=>{if(a.dep)srcKeys.add(a.dep.on);if(a.catdep)srcKeys.add(a.catdep.on);});
+ if(set.length){const b=sec('Eigenschaften');const row=el('div','frow');const bools=[];
+  set.forEach(x=>{
+   if(x.type==='boolean'){bools.push(x);return;}
+   if(x.type==='select'){const o=depOpts(x,k=>POSTVAL[k]?[POSTVAL[k]]:null,nd);if(x.dep&&POSTVAL[x.key]&&!o.includes(POSTVAL[x.key]))delete POSTVAL[x.key];row.appendChild(fld(x.key,x.label,x.required,selb(x.key,o,!!x.catalog||srcKeys.has(x.key)),x.help));}
+   else if(x.type==='model'){const br=POSTVAL[x.parent];const ms=br?(D.catalogs[x.catalog]?.[br]||[]):[];const ctx=chainOf(nd).map(c=>c.n).find(n=>D.catalogs[x.catalog]&&D.catalogs[x.catalog][n]);const list=ms.length?ms:(ctx?D.catalogs[x.catalog][ctx]:[]);
+    row.appendChild(fld(x.key,x.label,x.required&&list.length>0,list.length?selb(x.key,list.concat(['Anderes Modell']),srcKeys.has(x.key)):inp(x.key,'text',br?'Modell eintragen':'Erst Marke wählen'),null));}
+   else if(x.type==='multiselect')row.appendChild(fld(x.key,x.label,x.required,()=>{const w=el('div');(x.options||[]).forEach(o=>{const l=el('label','chk');const c=el('input');c.type='checkbox';c.checked=(POSTVAL[x.key]||[]).includes(o);c.onchange=()=>{const a=new Set(POSTVAL[x.key]||[]);c.checked?a.add(o):a.delete(o);POSTVAL[x.key]=[...a];};l.appendChild(c);l.appendChild(document.createTextNode(o));w.appendChild(l);});return w;}));
+   else if(x.type==='number')row.appendChild(fld(x.key,x.label+(x.unit?' ('+x.unit+')':''),x.required,inp(x.key,'number',x.placeholder||''),x.help));
+   else{const co=catOpts(x,k=>POSTVAL[k]?[POSTVAL[k]]:null);row.appendChild(fld(x.key,x.label,x.required,co&&co.length?selb(x.key,co.concat(['Anderes Modell'])):inp(x.key,'text',x.placeholder||''),x.help));}});
+  b.appendChild(row);
+  if(bools.length){b.appendChild(el('div','hint','Ausstattung und Merkmale'));const w=el('div','frow');bools.forEach(x=>{const l=el('label','chk');const c=el('input');c.type='checkbox';c.checked=!!POSTVAL[x.key];c.onchange=()=>{POSTVAL[x.key]=c.checked;};l.appendChild(c);l.appendChild(document.createTextNode(x.label));w.appendChild(l);});b.appendChild(w);}}
+ // C Preis
+ const pm=nd.inh.price;
+ if(pm!=='none'){const c=sec('Preis');
+  if(pm==='free')c.appendChild(el('p','meta','In dieser Kategorie wird alles verschenkt – kein Preis nötig.'));
+  else{const row=el('div','frow');row.appendChild(fld('__preis',(nd.inh.priceLabel||'Preis')+' in €'+(nd.inh.priceUnit?' '+nd.inh.priceUnit:''),pm==='required',inp('__preis','number','z. B. 250')));
+   const l=el('label','chk');const cb=el('input');cb.type='checkbox';cb.checked=!!POSTVAL.__vb;cb.onchange=()=>{POSTVAL.__vb=cb.checked;};l.appendChild(cb);l.appendChild(document.createTextNode('Verhandlungsbasis (VB)'));const w=el('div','fld');w.appendChild(el('label','',' '));w.appendChild(l);row.appendChild(w);c.appendChild(row);}
+  let x=nd,nt=null;while(x&&!nt){nt=x.note;x=x.p;}if(nt)c.appendChild(el('div','catnote on',nt));}
+ // D Übergabe und Ort
+ const d=sec('Übergabe und Ort');const row=el('div','frow');
+ if(versand)row.appendChild(fld('versand',versand.label,false,selb('versand',versand.options||[])));
+ if(chainOf(nd).some(x=>x.n==='Immobilien Ausland'))row.appendChild(fld('__ortname','Ort / Region im Ausland',true,inp('__ortname','text','z. B. Antalya')));
+ else{row.appendChild(fld('__plz','PLZ',true,inp('__plz','text','z. B. 12529')));row.appendChild(fld('__ortname','Ort',true,inp('__ortname','text','z. B. Schönefeld')));}
+ d.appendChild(row);
+ const send=el('button','btnp','Anzeige veröffentlichen');send.type='button';send.onclick=()=>submitPost(nd);v.appendChild(send);
+ v.appendChild(el('p','note','Entwurf: Die Anzeige wird nur in diesem Browserfenster angezeigt und nicht gespeichert.'));
+}
+function submitPost(nd){
+ const {set,versand}=postFields(nd);POSTERR={};const E=(k,m)=>{if(!POSTERR[k])POSTERR[k]=m;};
+ const empty=k=>POSTVAL[k]==null||String(POSTVAL[k]).trim()===''||(Array.isArray(POSTVAL[k])&&!POSTVAL[k].length);
+ if(empty('__titel'))E('__titel','Bitte gib einen Titel ein.');else if(POSTVAL.__titel.trim().length<5)E('__titel','Der Titel ist zu kurz (mind. 5 Zeichen).');
+ if(empty('__text'))E('__text','Bitte beschreibe kurz, was du anbietest.');
+ set.forEach(x=>{if(x.type==='boolean')return;
+  if(x.required&&empty(x.key)&&!(x.type==='model'&&empty(x.parent)))E(x.key,'Bitte ausfüllen.');
+  if(x.type==='number'&&!empty(x.key)){const n=+POSTVAL[x.key];if(isNaN(n))E(x.key,'Bitte eine Zahl eingeben.');else if(x.min!=null&&n<x.min||x.max!=null&&n>x.max)E(x.key,'Bitte einen Wert zwischen '+x.min+' und '+fmt(x.max)+' eingeben.');}});
+ if(nd.inh.price==='required'&&empty('__preis'))E('__preis','Bitte gib einen Preis ein.');
+ if(!empty('__preis')&&(isNaN(+POSTVAL.__preis)||+POSTVAL.__preis<0))E('__preis','Bitte einen gültigen Preis eingeben.');
+ const ausland=chainOf(nd).some(x=>x.n==='Immobilien Ausland');
+ if(!ausland){if(empty('__plz'))E('__plz','Bitte PLZ angeben.');else if(!/^\d{5}$/.test(POSTVAL.__plz.trim()))E('__plz','Die PLZ hat 5 Ziffern.');}
+ if(empty('__ortname'))E('__ortname','Bitte Ort angeben.');
+ if(Object.keys(POSTERR).length){postForm(nd);const first=document.querySelector('#postview .err');if(first&&first.scrollIntoView)first.scrollIntoView({block:'center'});return;}
+ const vals={},bools=[],meta=[];
+ set.forEach(x=>{if(x.type==='boolean'){if(POSTVAL[x.key])bools.push(x.label);return;}if(!empty(x.key)){vals[x.key]=POSTVAL[x.key];if(meta.length<3&&x.key!=='marke'&&x.key!=='modell')meta.push(x.type==='number'?(LBL[x.key]?LBL[x.key](POSTVAL[x.key]):x.unit?fmt(+POSTVAL[x.key])+' '+x.unit:x.label+' '+POSTVAL[x.key]):[].concat(POSTVAL[x.key]).join(', '));}});
+ if(versand&&!empty('versand'))vals.versand=POSTVAL.versand;
+ const price=empty('__preis')?null:+POSTVAL.__preis;
+ const priceTxt=nd.inh.price==='free'?'Zu verschenken':price==null?'':fmt(price)+' €'+(nd.inh.priceUnit?' '+nd.inh.priceUnit:'')+(POSTVAL.__vb?' VB':'');
+ const title=(vals.marke?vals.marke+' '+(vals.modell&&vals.modell!=='Anderes Modell'?vals.modell+' · ':''):'')+POSTVAL.__titel.trim();
+ const ad={node:nd,title,price,priceTxt,vals,bools,meta,fotos:POSTVAL.__fotos||[],ort:ausland?POSTVAL.__ortname.trim():POSTVAL.__plz.trim()+' '+POSTVAL.__ortname.trim()};
+ MY.unshift(ad);MODE='browse';document.getElementById('postview').innerHTML='';go(nd);
+ const kl=document.getElementById('kiline');kl.className='kiline on';kl.textContent='✓ Deine Anzeige „'+POSTVAL_last(ad)+'“ ist eingestellt und steht ganz oben. Sie erscheint auch, wenn jemand passend filtert.';
+}
+const POSTVAL_last=a=>a.title;
+document.getElementById('postbtn').onclick=()=>{MODE=MODE==='post'?'browse':'post';render();window.scrollTo({top:0});};
+document.getElementById('home').onclick=()=>go(ROOT);
+fetch('data.json').then(r=>r.json()).then(d=>{D=d;
+ const top=build(d.tree,null,{price:"required",priceLabel:"Preis"});
+ ROOT={n:"Alle Kategorien",c:top,p:null,inh:{}};top.forEach(t=>t.p=null);ROOT.k=top.reduce((a,b)=>a+b.k,0);
+ (function w(ns){ns.forEach(x=>{IDX.push(x);if(x.c)w(x.c);});})(top);
+ 
+ const im=top.find(t=>t.n==='Immobilien');const wo=im&&im.c.find(x=>x.n==='Wohnen');const mi=wo&&wo.c.find(x=>x.n==='Mieten');
+ go(mi||ROOT);
+}).catch(()=>{document.getElementById('list').innerHTML='<div class="load">Katalog konnte nicht geladen werden.</div>';});
+}
+</script>
+</body>
+</html>
